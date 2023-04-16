@@ -1,0 +1,6 @@
+﻿TODO
+- Add tiktoken to make sure I don't use more tokens than I need to by asking local models questions first, or possibly smaller models to gather info and better model to write code.
+
+- Add weaviate into this
+- implement the idea of babyagi in this
+-langchain 

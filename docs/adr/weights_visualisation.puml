@@ -1,0 +1,40 @@
+@startuml
+!define C4 https://raw.githubusercontent.com/plantuml-stdlib/Cicon-PlantUML/master/sprites/C4/
+
+!includeurl C4/C4_Context.puml
+!includeurl C4/C4_Container
+!includeurl C4/C4_Component.puml
+!includeurl C4/C4_Code.puml
+
+$deciders = [
+  "Project Manager",
+  "Solution Architect",
+  "AI Expert",
+  "Software Engineer",
+  "DevOps Engineer",
+  "Security Expert"
+]
+
+$options = [
+  "Option 1",
+  "Option 2",
+  "Option 3",
+  "Option 4",
+  "Option 5"
+]
+
+!foreach $decider in $deciders
+  Person($decider, "$decider", "Weight: {weight}")
+!endfor
+
+!foreach $option in $options
+  System($option, "$option")
+!endfor
+
+!foreach $decider in $deciders
+  !foreach $option in $options
+    Rel($decider, $option)
+  !endfor
+!endfor
+
+@enduml

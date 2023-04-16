@@ -1,0 +1,3 @@
+[submodule "babyagi"]
+	path = babyagi
+	url = https://github.com/webgrip/babyagi

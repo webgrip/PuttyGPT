@@ -1,0 +1,5 @@
+langchain==0.0.141
+
+# lime==0.2.0.1
+#tensorflow==2.12.*
+#auto-nlp==0.40

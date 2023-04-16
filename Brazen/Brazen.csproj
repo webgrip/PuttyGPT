@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>9f9706b5-eb2e-4f57-9d30-633ee8a213da</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="docs\adr\first.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="docs\adr\first.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.52.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Grpc.JsonTranscoding" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Grpc.Swagger" Version="0.3.4" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.7.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
+    <PackageReference Include="Standard.AI.OpenAI" Version="0.3.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Protos\Protos.csproj" />
+  </ItemGroup>
+
+</Project>
