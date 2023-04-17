@@ -1,0 +1,20 @@
+/* TEAM */
+Ryan Grippeling: idk
+Site: https://ryangrippeling.nl
+Contact: ryan@webgrip.nl
+Twitter: @RyanGrippeling
+GitHub: https://github.com/Ryangr0
+
+/* CONTRIBUTORS */ THIS COULD BE YOU
+Contributor Name: Contributor Role
+Site: https://contributorwebsite.com
+Contact: contributorname@example.com
+Twitter: @contributortwitterhandle
+GitHub: https://github.com/contributorusername
+
+/* THANKS */ # TODO, I'll have AI do it
+Package Vendor Name: Package Vendor Role
+Site: https://packagevendorwebsite.com
+Contact: packagevendor@example.com
+Twitter: @packagevendortwitterhandle
+GitHub: https://github.com/packagevendorusername

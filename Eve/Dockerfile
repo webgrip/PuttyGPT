@@ -45,8 +45,8 @@ RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
 # Copy the requirements file to the container
-COPY requirements.txt .
-COPY requirements-application.txt .
+COPY Eve/requirements.txt .
+COPY Eve/requirements-application.txt .
 
 # Install the Python dependencies
 RUN pip install --upgrade pip
@@ -54,7 +54,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir -r requirements-application.txt
 
 # Copy the application code to the container
-COPY . ./app
+COPY ./Eve/* ./app
 
 # Set the entrypoint for the container
 CMD [ "python", "main.py" ]
