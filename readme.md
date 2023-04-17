@@ -1,12 +1,13 @@
 ﻿Disclaimer: Most of the code and documentation, including this readme, has been written by my input, chatgpt's output, and so on.
 
-
 PuttyGPT - The Conversational AI Platform
 =========================================
 
-PuttyGPT is a conversational AI project powered by OpenAI's GPT-4, Weaviate for vector storage, and other state-of-the-art tools, providing a comprehensive and user-friendly interface for developers, AI enthusiasts, and business professionals. By utilizing the latest technologies and with the collaboration of our package contributors, we aim to create a solid foundation for diverse AI applications.
+# 🚧 Before you proceed 🚧
+Please note that this is a very early version of the project, and we are still in the process of wrapping things up, wiring components together, and experimenting with new ideas. As such, the project may undergo significant changes and updates as we continue to evolve and refine our vision. Any ideas are welcome and I will get back to you as soon as I can.
+[CONTRIBUTING.md](./CONTRIBUTING.md)
 
-#![PuttyGPT Banner](./images/banner.png)
+PuttyGPT is a conversational AI project powered by OpenAI's GPT-4, Weaviate for vector storage, and other state-of-the-art tools, providing a comprehensive and user-friendly interface for developers, AI enthusiasts, and business professionals. By utilizing the latest technologies and with the collaboration of our package contributors, we aim to create a solid foundation for diverse AI applications.
 
 :sparkles: Features
 -------------------
@@ -20,9 +21,7 @@ PuttyGPT is a conversational AI project powered by OpenAI's GPT-4, Weaviate for 
 - Designed for extensibility and easy integration with other APIs and services
 - Dockerized deployment for ease of installation and scalability
 
-# 🚧 Before you proceed 🚧
-Please note that this is a very early version of the project, and we are still in the process of wrapping things up, wiring components together, and experimenting with new ideas. As such, the project may undergo significant changes and updates as we continue to evolve and refine our vision. Any ideas are welcome and I will get back to you as soon as I can.
-[CONTRIBUTING.md](./CONTRIBUTING.md)
+
 
 :rocket: Getting Started
 ------------------------
@@ -32,7 +31,7 @@ Please note that this is a very early version of the project, and we are still i
 Clone the repository and navigate to the project directory:
 
 ```
-bashCopy codegit clone https://github.com/yourusername/puttygpt.git
+git clone https://github.com/yourusername/puttygpt.git
 cd puttygpt
 
 ```
@@ -40,13 +39,13 @@ cd puttygpt
 Build and run the Docker containers using the provided `docker-compose.yml` file:
 
 ```
-bashCopy codedocker-compose up --build
+docker-compose up --build
 
 ```
 
 ### Usage
 
-To interact with the application, visit  on your web browser or use the exposed API endpoints.
+To interact with the application, monitor your docker logs for eve
 
 :wrench: Customization
 ----------------------
