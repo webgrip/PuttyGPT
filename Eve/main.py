@@ -72,8 +72,8 @@ retriever = WeaviateHybridSearchRetriever(
 )
 
 
-def x():
-    mode = sys.argv[1] if len(sys.argv) > 1 else "dry"
+def x(mode):
+    
 
     # explainer = lime.LimeTextExplainer(...)
 
@@ -218,7 +218,8 @@ def process_data(data, mode):
 
 if __name__ == "__main__":
     try:
-        x()
+        mode = sys.argv[1] if len(sys.argv) > 1 else "dry"
+        x(mode)
     except openai.error.RateLimitError:
         print(
             "The OpenAI API rate limit has been exceeded. Waiting 10 seconds and trying again."
