@@ -108,7 +108,7 @@ def process_data(data, mode):
         document.meta["cost"] = cost
 
         retriever.add_documents([document])
-        z
+
         # Log metadata
 
 
