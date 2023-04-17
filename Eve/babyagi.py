@@ -11,7 +11,6 @@ OPENAI_TEMPERATURE = 0.7
 OBJECTIVE = "Write me a script that queries langchain's newest documentation and summarizes everything in a simple plain manner."
 INITIAL_TASK = "Decide on what solutions would best serve me to reach my objective"
 
-
 class TaskManager:
     def __init__(self):
         self.task_list = deque([])

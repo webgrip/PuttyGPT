@@ -219,4 +219,7 @@ def x():
     #aim_callback.flush_tracker(langchain_asset=agent, reset=False, finish=True)
     
 if __name__ == "__main__":
-    x()
+    try:
+        x()
+    except openai.error.InvalidRequestError:
+        print("\n\n\n-------\nWHOOPSIE!\n--------")

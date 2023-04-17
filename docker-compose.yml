@@ -21,7 +21,7 @@ services:
     container_name: eve
     image: webgrip/eve
     ports:
-    - 8000:5000
+    - 1337:5000
     build:
       context: .
       dockerfile: Eve/Dockerfile
@@ -64,6 +64,39 @@ services:
       options:
         max-size: "1m"
         max-file: "1"
+
+  langchain-frontend:
+    container_name: langchain-frontend
+    image: notlangchain/langchainplus-frontend:latest
+    ports:
+      - 4173:4173
+    environment:
+      - BACKEND_URL=http://langchain-backend:8000
+      - PUBLIC_BASE_URL=http://localhost:8000
+      - PUBLIC_DEV_MODE=true
+    depends_on:
+      - langchain-backend
+
+  langchain-backend:
+    container_name: langchain-backend
+    image: notlangchain/langchainplus:latest
+    environment:
+      - PORT=8000
+      - LANGCHAIN_ENV=local
+    ports:
+      - 8000:8000
+    depends_on:
+      - langchain-db
+
+  langchain-db:
+    container_name: langchain-db
+    image: postgres:14.1
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - 5432:5432
 networks:
   default:
     name: webgrip

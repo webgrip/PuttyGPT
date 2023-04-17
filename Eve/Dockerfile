@@ -58,3 +58,4 @@ COPY ./Eve/* ./app
 
 # Set the entrypoint for the container
 CMD [ "python", "main.py" ]
+#ENTRYPOINT ["tail", "-f", "/dev/null"]

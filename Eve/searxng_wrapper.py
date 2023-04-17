@@ -1,7 +1,5 @@
 from typing import List, Dict
-import requests
 from config import SEARXNG_URL
-import json
 from langchain.utilities import SearxSearchWrapper
 
 
