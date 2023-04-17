@@ -9,8 +9,6 @@ Please note that this is a very early version of the project, and we are still i
 
 PuttyGPT is a conversational AI project powered by OpenAI's GPT-4, Weaviate for vector storage, and other state-of-the-art tools, providing a comprehensive and user-friendly interface for developers, AI enthusiasts, and business professionals. By utilizing the latest technologies and with the collaboration of our package contributors, we aim to create a solid foundation for diverse AI applications.
 
-#![PuttyGPT Banner](./images/banner.png)
-
 :sparkles: Features
 -------------------
 
