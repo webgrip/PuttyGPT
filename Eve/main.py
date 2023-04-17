@@ -221,5 +221,28 @@ def x():
 if __name__ == "__main__":
     try:
         x()
+    except openai.error.RateLimitError:
+        print(
+            "The OpenAI API rate limit has been exceeded. Waiting 10 seconds and trying again."
+            "   *** The OpenAI API rate limit has been exceeded. Waiting 10 seconds and trying again. ***"
+        )
+    except openai.error.Timeout:
+        print(
+            "   *** OpenAI API timeout occured. Waiting 10 seconds and trying again. ***"
+        )
+    except openai.error.APIError:
+        print(
+            "   *** OpenAI API error occured. Waiting 10 seconds and trying again. ***"
+        )
+    except openai.error.APIConnectionError:
+        print(
+            "   *** OpenAI API connection error occured. Check your network settings, proxy configuration, SSL certificates, or firewall rules. Waiting 10 seconds and trying again. ***"
+        )
     except openai.error.InvalidRequestError:
-        print("\n\n\n-------\nWHOOPSIE!\n--------")
+        print(
+            "   *** OpenAI API invalid request. Check the documentation for the specific API method you are calling and make sure you are sending valid and complete parameters. Waiting 10 seconds and trying again. ***"
+        )
+    except openai.error.ServiceUnavailableError:
+        print(
+            "   *** OpenAI API service unavailable. Waiting 10 seconds and trying again. ***"
+        )

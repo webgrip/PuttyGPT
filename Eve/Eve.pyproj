@@ -24,6 +24,9 @@
   <ItemGroup>
     <Compile Include="apify_scraper.py" />
     <Compile Include="babyagi.py" />
+    <Compile Include="components\IContextStorage.py" />
+    <Compile Include="components\pinecone.py" />
+    <Compile Include="components\weaviate.py" />
     <Compile Include="config.py" />
     <Compile Include="context_agent.py" />
     <Compile Include="DPR.py" />
@@ -70,9 +73,11 @@
     <Folder Include="chains\vectordb\" />
     <Folder Include="chains\vectordb\reduce\" />
     <Folder Include="chains\vectordb\single\" />
+    <Folder Include="components\" />
     <Folder Include="modules\" />
     <Folder Include="retrievers\" />
     <Folder Include="data\" />
+    <Folder Include="weaviate and gpu\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="chains\api\meteo\chain.json" />

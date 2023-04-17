@@ -1,5 +1,5 @@
 /* TEAM */
-Ryan Grippeling: idk
+Ryan Grippeling: Maintainer
 Site: https://ryangrippeling.nl
 Contact: ryan@webgrip.nl
 Twitter: @RyanGrippeling

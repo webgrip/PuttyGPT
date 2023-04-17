@@ -28,6 +28,11 @@ services:
     env_file: .env
     volumes:
       - ./Eve/:/app
+    networks:
+      - weaviate-network
+      - putty-network
+    depends_on:
+    - weaviate
 
   redis:
     container_name: redis
@@ -99,9 +104,13 @@ services:
       - 5432:5432
 
 networks:
-  putty-network:
+
+  default:
     name: putty-network
+
+  weaviate-network:
     external: true
+
   searxng:
     ipam:
       driver: default

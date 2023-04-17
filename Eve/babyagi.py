@@ -1,22 +1,30 @@
 import time
-import openai
 import os
 from collections import deque
 from execution_agent import ExecutionAgent
 from prioritzation_agent import PrioritizationAgent
 from task_creation_agent import TaskCreationAgent
-from components.context_storage.IContextStorage import ContextData, get_storage
+from components.IContextStorage import ContextStorage, ContextData, WeaviateOptions
 
 # Constants
-OPENAI_API_MODEL = "gpt-3.5-turbo"
-OPENAI_TEMPERATURE = 0.7
+
 OBJECTIVE = "Write me a script that queries langchain's newest documentation and summarizes everything in a simple plain manner."
 INITIAL_TASK = "Decide on what solutions would best serve me to reach my objective"
 
 TASK_STORAGE_NAME = os.getenv("TASK_STORAGE_NAME", os.getenv("TABLE_NAME", "tasks"))
-CONTEXT_STORAGE_TYPE = os.getenv("CONTEXT_STORAGE_TYPE", "pinecone")
+CONTEXT_STORAGE_TYPE = os.getenv("CONTEXT_STORAGE_TYPE", "weaviate")
 
-context_storage = get_storage(CONTEXT_STORAGE_TYPE, TASK_STORAGE_NAME)
+
+WEAVIATE_HOST = os.getenv("WEAVIATE_HOST", "")
+WEAVIATE_VECTORIZER = os.getenv("WEAVIATE_VECTORIZER", "")
+
+assert WEAVIATE_HOST, "WEAVIATE_HOST is missing from .env"
+assert WEAVIATE_VECTORIZER, "WEAVIATE_VECTORIZER is missing from .env"
+
+
+context_storage_options = WeaviateOptions(WEAVIATE_HOST, WEAVIATE_VECTORIZER, TASK_STORAGE_NAME)
+
+context_storage = ContextStorage.factory(CONTEXT_STORAGE_TYPE, context_storage_options)
 
 class TaskManager:
     def __init__(self):
@@ -41,38 +49,7 @@ class TaskManager:
             print(f"{task['task_id']}: {task['task_name']}")
 
 
-class OpenAIConnector:
-    def __init__(
-        self,
-        model: str = OPENAI_API_MODEL,
-        temperature: float = OPENAI_TEMPERATURE,
-        max_tokens: int = 100,
-    ):
-        self.model = model
-        self.temperature = temperature
-        self.max_tokens = max_tokens
 
-    def get_ada_embedding(self, text: str) -> list:
-        text = text.replace("\n", " ")
-        response = openai.Embedding.create(input=[text], model="text-embedding-ada-002")
-        return response["data"][0]["embedding"]
-
-    def openai_call(self, prompt: str) -> str:
-        while True:
-            try:
-                response = openai.ChatCompletion.create(
-                    model=self.model,
-                    messages=[{"role": "system", "content": prompt}],
-                    temperature=self.temperature,
-                    max_tokens=self.max_tokens,
-                    n=1,
-                    stop=None,
-                )
-                return response.choices[0].message.content.strip()
-            except openai.error.RateLimitError:
-                time.sleep(10)
-            else:
-                break
 
 
 def main():
@@ -92,7 +69,7 @@ def main():
         print(f"{task['task_id']}: {task['task_name']}")
 
         # Execute the task and store the result
-        result = ExecutionAgent.run(OBJECTIVE, task["task_name"])
+        result = ExecutionAgent(context_storage).run(OBJECTIVE, task["task_name"])
         print("\033[93m\033[1m" + "\n*****TASK RESULT*****\n" + "\033[0m\033[0m")
         print(result)
 
@@ -102,24 +79,21 @@ def main():
 
 
         data = { "task": task["task_name"], "result": result }
-        context = ContextData.run(result_id, data, enriched_result['data'])
+        context = ContextData(result_id, data, enriched_result['data'])
         context_storage.upsert(context, OBJECTIVE)
 
-
-
-        vector = OpenAIConnector.get_ada_embedding(enriched_result["data"])
-        index.upsert([(result_id, vector, {"task": task["task_name"], "result": result})],
-                     namespace=OBJECTIVE)
+        for t in task_manager.task_list:
+            print(t)
 
         # Create new tasks and reprioritize task list
-        new_tasks = TaskCreationAgent(task_manager).run(
+        new_tasks = TaskCreationAgent().run(
             OBJECTIVE,
             enriched_result,
             task["task_name"],
-            [t["task_name"] for t in TaskManager.task_list],
+            [t["task_name"] for t in task_manager.task_list]
         )
-        TaskManager.create_new_tasks(new_tasks)
-        PrioritizationAgent.run(task["task_id"])
+        task_manager.create_new_tasks(new_tasks)
+        PrioritizationAgent(task_manager).run(task["task_id"], OBJECTIVE)
         time.sleep(1)
 
 if __name__ == "__main__":
