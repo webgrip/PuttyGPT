@@ -17,8 +17,8 @@ WORKDIR /app
 RUN apk update && \
     apk upgrade
 
-RUN apk add --no-cache --virtual build-dependencies python3
-RUN apk add --virtual build-runtime build-base python3-dev openblas-dev freetype-dev pkgconfig gfortran dumb-init musl libc6-compat linux-headers build-base bash git ca-certificates freetype libgfortran libgcc libstdc++ openblas tcl tk
+RUN apk add --no-cache --virtual .build-dependencies python3 build-base gcc musl-dev python3-dev openblas-dev libffi-dev openssl-dev g++ gfortran freetype-dev pkgconfig dumb-init musl libc6-compat linux-headers build-base bash git ca-certificates freetype libgfortran libgcc libstdc++ openblas tcl tk
+RUN apk add --virtual build-runtime openssh git
 RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
 RUN python3 -m ensurepip
 RUN rm -r /usr/lib/python*/ensurepip
@@ -54,7 +54,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir -r requirements-application.txt
 
 # Copy the application code to the container
-COPY ./Eve/* ./app
+COPY ./Eve ./app
 
 # Set the entrypoint for the container
 #CMD [ "python", "main.py" ]

@@ -1,4 +1,6 @@
-langchain==0.0.141
+
+
+langchain==0.0.142
 
 # lime==0.2.0.1
 #tensorflow==2.12.*

@@ -75,12 +75,17 @@ vectorstore = Weaviate(client, "Paragraph", "content")
 
 #Can we make this gradients?
 
-longTermMemory = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.0000000000000000000000001, k=1)
-midTermMemory = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.000000005, k=1) 
-shortTermMemory = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.000000005, k=1) 
+longTermMemoryRetriever = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.0000000000000000000000001, k=1)
+midTermMemoryRetriever = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.000000005, k=1) 
+shortTermMemoryRetriever = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.33, k=1) 
 
-hybridSearchRetriever = WeaviateHybridSearchRetriever(
-    client, index_name="LangChain", text_key="text"
+sparseAndDenseRetriever = WeaviateHybridSearchRetriever(
+    client,
+    index_name="LangChain",
+    text_key="text",
+    alpha=0.5,
+    k=4,
+    attributes=[],
 )
 
 
@@ -135,26 +140,26 @@ def x():
         prompt=prompt,
         llm=openai,
         chain_type="stuff",
-        retriever=retriever,
+        retriever=sparseAndDenseRetriever,
         verbose=True,
         #search_kwargs={"k": 1},
     )
 
-    timeWeightedVectorStore = RetrievalQA.from_chain_type(
-        prompt=prompt,
-        llm=openai,
-        chain_type="stuff",
-        retriever=retriever,
-        verbose=True,
-        #search_kwargs={"k": 1},
-    )
+    #timeWeightedVectorStore = RetrievalQA.from_chain_type(
+    #    prompt=prompt,
+    #    llm=openai,
+    #    chain_type="stuff",
+    #    retriever=sparseAndDenseRetriever,
+    #    verbose=True,
+    #    #search_kwargs={"k": 1},
+    #)
 
     
 
     agent = initialize_agent(
         tools,
         openai,
-        llm_chain=llm_chain, 
+        llm_chain=hybridSearch, 
         memory=readonlymemory,
         agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
         callback_manager=manager,
