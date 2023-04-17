@@ -46,7 +46,7 @@ docker-compose up --build
 
 ### Usage
 
-To interact with the application, visit  on your web browser or use the exposed API endpoints.
+To interact with the application, monitor your docker logs for eve
 
 :wrench: Customization
 ----------------------
