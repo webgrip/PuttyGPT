@@ -29,9 +29,13 @@ from langchain.memory import (
 from langchain.prompts import PromptTemplate
 from text_processing import TextProcessing
 from tools import create_tools
-from langchain.agents import Tool
+from langchain.agents import Tool, AgentExecutor
 from searxng_wrapper import SearxNGWrapper
 from langchain.schema import Document
+
+from CustomPromptTemplate import CustomPromptTemplate
+
+from langchain.retrievers import TimeWeightedVectorStoreRetriever
 
 # from weaviate_schema import  ScrapedData
 
@@ -64,12 +68,22 @@ client = weaviate.Client(
 
 schema = client.schema.get()
 
+from langchain.vectorstores import Weaviate
 print(schema)
+vectorstore = Weaviate(client, "Paragraph", "content")
 
 
-retriever = WeaviateHybridSearchRetriever(
+#Can we make this gradients?
+
+longTermMemory = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.0000000000000000000000001, k=1)
+midTermMemory = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.000000005, k=1) 
+shortTermMemory = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.000000005, k=1) 
+
+hybridSearchRetriever = WeaviateHybridSearchRetriever(
     client, index_name="LangChain", text_key="text"
 )
+
+
 
 
 def x():
@@ -81,7 +95,7 @@ def x():
     tracer.load_default_session()
     manager = CallbackManager([StdOutCallbackHandler(), tracer])
 
-    openai = OpenAI(temperature=0, callback_manager=manager)
+    openai = OpenAI(temperature=0.415, callback_manager=manager)
 
     memory = ConversationBufferMemory(memory_key="chat_history")
     readonlymemory = ReadOnlySharedMemory(memory=memory)
@@ -89,7 +103,7 @@ def x():
     template = """Use the following format:
         Question: the input question you must answer
         Thought: you should always think about what to do
-        Action: the action to take, should be one of [human_input_required, bash, search, summarize]
+        Action: the action to take, should be one of [HumanInput, Bash, SearchEngine, SummarizeText, SummarizeDocuments]
         Action Input: what to instruct the AI Action representative.
         Observation: The Agent's response
         (this Thought/Action/Action Input/Observation can repeat N times)
@@ -106,14 +120,19 @@ def x():
         
     """
 
-    prompt = PromptTemplate(
-        template=template, input_variables=["input", "chat_history", "agent_scratchpad"]
+    tools = create_tools(manager=manager)
+    tool_names = [tool.name for tool in tools]
+
+    prompt = CustomPromptTemplate(
+        template=template,
+        tools=tools,
+        # This omits the `agent_scratchpad`, `tools`, and `tool_names` variables because those are generated dynamically
+        # This includes the `intermediate_steps` variable because that is needed
+        input_variables=["input", "intermediate_steps"]
     )
 
-    # Create LLMChain object with prompt
-   # llm_chain = RetrievalQA(prompt=prompt, llm=openai, verbose=True)
-
-    llm_chain = RetrievalQA.from_chain_type(
+    hybridSearch = RetrievalQA.from_chain_type(
+        prompt=prompt,
         llm=openai,
         chain_type="stuff",
         retriever=retriever,
@@ -121,28 +140,36 @@ def x():
         #search_kwargs={"k": 1},
     )
 
-    tools = create_tools(llm_chain=llm_chain, memory=readonlymemory, manager=manager)
+    timeWeightedVectorStore = RetrievalQA.from_chain_type(
+        prompt=prompt,
+        llm=openai,
+        chain_type="stuff",
+        retriever=retriever,
+        verbose=True,
+        #search_kwargs={"k": 1},
+    )
 
-    # tools = [
-    #    Tool(
-    #        name="Intermediate Answer",
-    #        func=SearxNGWrapper().run,
-    #        description="useful for when you need to ask with search"
-    #    )
-    # ]
+    
 
     agent = initialize_agent(
         tools,
         openai,
+        llm_chain=llm_chain, 
         memory=readonlymemory,
         agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
         callback_manager=manager,
+        stop=["\nObservation:"], 
         max_execution_time=5,
         max_iterations=10,
-        early_stopping_method="generate",
+        #early_stopping_method="generate",
         # return_intermediate_steps=True,
         verbose=True,
+        allowed_tools=tool_names
     )
+
+    AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True)
+
+
 
     start_time = time.time()
 

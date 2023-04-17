@@ -30,9 +30,12 @@
     <Compile Include="components\weaviate.py" />
     <Compile Include="config.py" />
     <Compile Include="context_agent.py" />
+    <Compile Include="CustomOutputParser.py" />
+    <Compile Include="CustomPromptTemplate.py" />
     <Compile Include="DPR.py" />
     <Compile Include="Eve.py" />
     <Compile Include="execution_agent.py" />
+    <Compile Include="experiments\timeweigh.py" />
     <Compile Include="LANGCHAN_COMPLETION_EVALS.py" />
     <Compile Include="llmchain.py" />
     <Compile Include="main.py" />
@@ -75,6 +78,7 @@
     <Folder Include="chains\vectordb\reduce\" />
     <Folder Include="chains\vectordb\single\" />
     <Folder Include="components\" />
+    <Folder Include="experiments\" />
     <Folder Include="modules\" />
     <Folder Include="retrievers\" />
     <Folder Include="data\" />
