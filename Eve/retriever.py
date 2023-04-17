@@ -1,5 +1,6 @@
 from typing import Optional, List, Dict
 import weaviate
+from langchain.schema import BaseRetriever
 #import DPR
 
 
@@ -36,10 +37,16 @@ class WeaviateRetrieverWrapper:
         return documents
 
 
-class WeaviateHybridSearchRetrieverWrapper:
-    def __init__(self, weaviate_client: weaviate.Client, embedding_model: str, use_gpu: bool = False, model_version: str = ""):
-        self.weaviate_client = weaviate_client
-       # self.dpr = DPR(embedding_model=embedding_model, use_gpu=use_gpu, model_version=model_version)
+class WeaviateHybridSearchRetrieverWrapper(BaseRetriever):
+    def __init__(self,
+        client: weaviate.Client,
+        index_name: str,
+        text_key: str,
+        alpha: float = 0.5,
+        k: int = 4,
+        attributes: Optional[List[str]] = None,
+    ):
+        self.weaviate_client = client
 
     def retrieve(self, query: str, filters: Optional[Dict] = None, top_k: int = 10, **kwargs) -> List:
         if filters:
