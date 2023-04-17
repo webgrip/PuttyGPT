@@ -72,7 +72,7 @@ retriever = WeaviateHybridSearchRetriever(
 )
 
 
-def x(mode):
+def x():
     
 
     # explainer = lime.LimeTextExplainer(...)
@@ -163,11 +163,11 @@ def x(mode):
     # aim_callback.flush_tracker(langchain_asset=agent, reset=False, finish=True)
 
 
-def process_data(data, mode):
+def process_data(data):
     text_processing = TextProcessing()
 
     # Customize the number of sections based on the mode
-    num_sections = {"dry": 0, "minimal": 1, "full": len(data["sections"])}[mode]
+    num_sections = {"dry": 0, "minimal": 1, "full": len(data["sections"])}['minimal']
 
     estimated_total_tokens = 0
     estimated_total_duration = 0
@@ -217,9 +217,10 @@ def process_data(data, mode):
 
 
 if __name__ == "__main__":
+
+
     try:
-        mode = sys.argv[1] if len(sys.argv) > 1 else "dry"
-        x(mode)
+        x()
     except openai.error.RateLimitError:
         print(
             "The OpenAI API rate limit has been exceeded. Waiting 10 seconds and trying again."
