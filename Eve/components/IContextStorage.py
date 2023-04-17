@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from typing import NamedTuple, Optional
 
 class StorageOptions(NamedTuple):
@@ -17,7 +16,7 @@ class ContextData(NamedTuple):
 class ContextStorage(ABC):
 
     @abstractmethod
-    def __init__(self, storage_name: Optional[str] = None, options: StorageOptions):
+    def __init__(self, storage_name: Optional[str] = None, options: StorageOptions = None):
         pass
 
     @abstractmethod
@@ -43,4 +42,4 @@ def get_storage(storage_type_name: str, task_storage_name: str, options: Optiona
         options = Weaviate.WeaviateOptions(storage_name=task_storage_name) if options is None else options
         return Weaviate(options=options)
     else:
-        raise ValueError(f'Invalid storage type: {storage_type_name}')
+        raise ValueError(f'Invalid storage type: {storage_type_name})

@@ -1,15 +1,22 @@
 import time
 import openai
+import os
 from collections import deque
 from execution_agent import ExecutionAgent
 from prioritzation_agent import PrioritizationAgent
 from task_creation_agent import TaskCreationAgent
+from components.context_storage.IContextStorage import ContextData, get_storage
 
 # Constants
 OPENAI_API_MODEL = "gpt-3.5-turbo"
 OPENAI_TEMPERATURE = 0.7
 OBJECTIVE = "Write me a script that queries langchain's newest documentation and summarizes everything in a simple plain manner."
 INITIAL_TASK = "Decide on what solutions would best serve me to reach my objective"
+
+TASK_STORAGE_NAME = os.getenv("TASK_STORAGE_NAME", os.getenv("TABLE_NAME", "tasks"))
+CONTEXT_STORAGE_TYPE = os.getenv("CONTEXT_STORAGE_TYPE", "pinecone")
+
+context_storage = get_storage(CONTEXT_STORAGE_TYPE, TASK_STORAGE_NAME)
 
 class TaskManager:
     def __init__(self):
@@ -92,6 +99,14 @@ def main():
         # Enrich result and store in a vector database (weaviate in this case)
         enriched_result = {"data": result}
         result_id = f"result_{task['task_id']}"
+
+
+        data = { "task": task["task_name"], "result": result }
+        context = ContextData.run(result_id, data, enriched_result['data'])
+        context_storage.upsert(context, OBJECTIVE)
+
+
+
         vector = OpenAIConnector.get_ada_embedding(enriched_result["data"])
         index.upsert([(result_id, vector, {"task": task["task_name"], "result": result})],
                      namespace=OBJECTIVE)

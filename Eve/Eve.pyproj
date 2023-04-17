@@ -22,7 +22,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="agents\proritization_agent.py" />
     <Compile Include="apify_scraper.py" />
     <Compile Include="babyagi.py" />
     <Compile Include="config.py" />

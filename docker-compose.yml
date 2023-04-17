@@ -97,13 +97,15 @@ services:
       - POSTGRES_DB=postgres
     ports:
       - 5432:5432
+
 networks:
-  default:
-    name: webgrip
+  putty-network:
+    name: putty-network
+    external: true
   searxng:
     ipam:
       driver: default
-
+      
 volumes:
   caddy-data:
   caddy-config:
