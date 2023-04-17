@@ -8,9 +8,10 @@ from langchain.memory import ReadOnlySharedMemory
 from langchain.utilities import BashProcess
 from langchain.llms import OpenAI
 
-from searxng_wrapper import SearxNGWrapper
+from langchain.utilities import SearxSearchWrapper
 #from wikipedia_api_wrapper import WikipediaAPIWrapper
 #from wolfram_alpha_api_wrapper import WolframAlphaAPIWrapper
+from config import SEARXNG_URL
 
 from langchain.chains.summarize import load_summarize_chain
 
@@ -44,8 +45,8 @@ def create_tools(llm_chain: LLMChain, memory: ReadOnlySharedMemory, manager: Cal
         #),
         Tool(
             name="search",
-            func=SearxNGWrapper().run,
-            description="useful for when you need to answer questions about current events",
+            func=SearxSearchWrapper(searx_host=SEARXNG_URL).run,
+            description="Only do this if you exhaust all other options",
             callback_manager=manager
         ),
         Tool(
@@ -53,11 +54,6 @@ def create_tools(llm_chain: LLMChain, memory: ReadOnlySharedMemory, manager: Cal
             func=load_summarize_chain(OpenAI(temperature=0), chain_type="refine").run,
             description="useful for when you summarize a conversation. The input to this tool should be a string, representing who will read this summary.",
             callback_manager=manager
-        ),
-        Tool(
-            name="Intermediate Answer",
-            func=SearxNGWrapper().run,
-            description="useful for when you need to ask with search"
         )
     ]
     

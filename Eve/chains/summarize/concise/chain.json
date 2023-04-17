@@ -33,10 +33,10 @@
   },
   "document_prompt": {
     "input_variables": [
-      "page_content"
+      "text"
     ],
     "output_parser": null,
-    "template": "{page_content}",
+    "template": "{text}",
     "template_format": "f-string",
     "_type": "prompt"
   },
