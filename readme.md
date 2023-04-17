@@ -32,7 +32,7 @@ Please note that this is a very early version of the project, and we are still i
 Clone the repository and navigate to the project directory:
 
 ```
-bashCopy codegit clone https://github.com/yourusername/puttygpt.git
+git clone https://github.com/yourusername/puttygpt.git
 cd puttygpt
 
 ```
@@ -40,7 +40,7 @@ cd puttygpt
 Build and run the Docker containers using the provided `docker-compose.yml` file:
 
 ```
-bashCopy codedocker-compose up --build
+docker-compose up --build
 
 ```
 
