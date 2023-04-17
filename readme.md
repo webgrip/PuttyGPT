@@ -1,8 +1,11 @@
 ﻿Disclaimer: Most of the code and documentation, including this readme, has been written by my input, chatgpt's output, and so on.
 
-
 PuttyGPT - The Conversational AI Platform
 =========================================
+
+# 🚧 Before you proceed 🚧
+Please note that this is a very early version of the project, and we are still in the process of wrapping things up, wiring components together, and experimenting with new ideas. As such, the project may undergo significant changes and updates as we continue to evolve and refine our vision. Any ideas are welcome and I will get back to you as soon as I can.
+[CONTRIBUTING.md](./CONTRIBUTING.md)
 
 PuttyGPT is a conversational AI project powered by OpenAI's GPT-4, Weaviate for vector storage, and other state-of-the-art tools, providing a comprehensive and user-friendly interface for developers, AI enthusiasts, and business professionals. By utilizing the latest technologies and with the collaboration of our package contributors, we aim to create a solid foundation for diverse AI applications.
 
@@ -20,9 +23,7 @@ PuttyGPT is a conversational AI project powered by OpenAI's GPT-4, Weaviate for 
 - Designed for extensibility and easy integration with other APIs and services
 - Dockerized deployment for ease of installation and scalability
 
-# 🚧 Before you proceed 🚧
-Please note that this is a very early version of the project, and we are still in the process of wrapping things up, wiring components together, and experimenting with new ideas. As such, the project may undergo significant changes and updates as we continue to evolve and refine our vision. Any ideas are welcome and I will get back to you as soon as I can.
-[CONTRIBUTING.md](./CONTRIBUTING.md)
+
 
 :rocket: Getting Started
 ------------------------
