@@ -1,3 +1,4 @@
+from cgitb import text
 import os
 import sys
 import time
@@ -35,8 +36,9 @@ from langchain.schema import Document
 # from weaviate_schema import  ScrapedData
 
 
-OBJECTIVE = "Write me a script that queries langchain's newest documentation and summarizes everything in a simple plain manner."
-INITIAL_TASK = "Decide on what solutions would best serve me to reach my objective"
+#OBJECTIVE = "Write me a script that queries langchain's newest documentation and summarizes everything in a simple plain manner."
+OBJECTIVE = "Read the file contents in the entire solution directory this script is running from, and summarize it in clear, clean language. If something fails, you must keep trying."
+INITIAL_TASK = "Decide on what solutions would best serve me to reach my objective. An internet search and a summarization might be a good idea."
 
 TASK_STORAGE_NAME = os.getenv("TASK_STORAGE_NAME", os.getenv("TABLE_NAME", "tasks"))
 CONTEXT_STORAGE_TYPE = os.getenv("CONTEXT_STORAGE_TYPE", "weaviate")
@@ -68,48 +70,6 @@ print(schema)
 retriever = WeaviateHybridSearchRetriever(
     client, index_name="LangChain", text_key="text"
 )
-
-
-def process_data(data, mode):
-    text_processing = TextProcessing()
-
-    # Customize the number of sections based on the mode
-    num_sections = {"dry": 0, "minimal": 1, "full": len(data["sections"])}[mode]
-
-    estimated_total_tokens = 0
-    estimated_total_duration = 0
-    total_cost = 0
-    cost_per_token = 0.0006  # You can adjust this
-
-    for i in range(num_sections):
-        # Create document
-        section_text = data["sections"][i]["text"]
-        section_title = data["sections"][i]["title"]
-
-        document = Document(
-            text=section_text, meta={"name": section_title, "url": data["url"]}
-        )
-
-        document.meta["sentiment"] = text_processing.analyze_sentiment(section_text)
-
-        document.meta["summary"] = text_processing.summarize_concice(section_text)
-
-        tokens = text_processing.count_tokens(section_text)
-        document.meta["tokens"] = tokens
-
-        estimated_duration = (
-            len(section_text) / 2000 * 5
-        )  # Assumes 2000 tokens per second
-        estimated_total_duration += estimated_duration
-        estimated_total_tokens += tokens
-        cost = tokens * cost_per_token * estimated_duration
-        total_cost += cost
-
-        document.meta["cost"] = cost
-
-        retriever.add_documents([document])
-
-        # Log metadata
 
 
 def x():
@@ -201,6 +161,59 @@ def x():
     # )
 
     # aim_callback.flush_tracker(langchain_asset=agent, reset=False, finish=True)
+
+
+def process_data(data, mode):
+    text_processing = TextProcessing()
+
+    # Customize the number of sections based on the mode
+    num_sections = {"dry": 0, "minimal": 1, "full": len(data["sections"])}[mode]
+
+    estimated_total_tokens = 0
+    estimated_total_duration = 0
+    total_cost = 0
+    cost_per_token = 0.0006  # You can adjust this
+
+    for i in range(num_sections):
+        # Create document
+        section_text = data["sections"][i]["text"]
+        section_title = data["sections"][i]["title"]
+        page_content = data["sections"][i]["page_content"]
+
+        document = Document(
+            text=text,
+            meta={
+                "name": section_title,
+                "url": data["url"],
+                "page_content": page_content
+            }
+        )
+
+        document.meta["sentiment"] = text_processing.analyze_sentiment(section_text)
+
+        #document.meta["summary"] = text_processing.summarize_concice(section_text)
+
+        tokens = text_processing.count_tokens(section_text)
+        document.meta["tokens"] = tokens
+
+        estimated_duration = (
+            len(section_text) / 2000 * 5
+        )  # Assumes 2000 tokens per second
+        estimated_total_duration += estimated_duration
+        estimated_total_tokens += tokens
+        cost = tokens * cost_per_token * estimated_duration
+        total_cost += cost
+
+        document.meta["cost"] = cost
+
+        print(document)
+
+        retriever.add_documents([document])
+
+        # Log metadata
+
+
+
 
 
 if __name__ == "__main__":

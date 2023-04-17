@@ -22,13 +22,13 @@ def create_tools(llm_chain: LLMChain, memory: ReadOnlySharedMemory, manager: Cal
         Tool(
             name="human_input_required",
             func=HumanInputRun().run,
-            description="useful for when you think you cannot proceed with your task until outside human intervention has occured, OR, when you simply would like some clarification",
+            description="Useful for when your objective has veered so far from the original aim that human intervention is necessary. If certainty falls below 70%, choose this option.",
             callback_manager=manager
         ),
         Tool(
             name="bash",
-            func=BashProcess().run,
-            description="useful for when you need to do anything on your file system, read and write to files, and in general do everything possible with access to a command line",
+            func=BashProcess(return_err_output=True).run,
+            description="Useful for when you need to do anything on your file system, read and write to files, and in general do everything possible when you can look up code and write the best version of it. Tip: you can write code with this, and even deploy new versions of yourself. Refactor yourself.",
             callback_manager=manager
         ),
         #Tool  (
@@ -44,14 +44,20 @@ def create_tools(llm_chain: LLMChain, memory: ReadOnlySharedMemory, manager: Cal
         #    callback_manager=manager
         #),
         Tool(
-            name="search",
+            name="Search online for the newest information on current events and human discourse about topics.",
             func=SearxSearchWrapper(searx_host=SEARXNG_URL).run,
-            description="Only do this if you exhaust all other options",
+            description="Search online for the newest information on current events and human discourse about topics. Only do this if you exhaust all other options. We want to stay low resource intensive.",
             callback_manager=manager
         ),
         Tool(
-            name="summarize",
-            func=load_summarize_chain(OpenAI(temperature=0), chain_type="refine").run,
+            name="Summarize a piece of text",
+            func=load_summarize_chain(OpenAI(temperature=0), chain_type="map_reduce").run,
+            description="Useful for when you need to summarize a small or even large piece of text, but not a set of documents. Give a well thought through, intelligent reasonable summarization. The input to this tool should be a string, which is the text that needs to be summarized",
+            callback_manager=manager
+        ),
+        Tool(
+            name="Summarize multiple documents",
+            func=load_summarize_chain(OpenAI(temperature=0), chain_type="map_reduce").run,
             description="useful for when you summarize a conversation. The input to this tool should be a string, representing who will read this summary.",
             callback_manager=manager
         )
