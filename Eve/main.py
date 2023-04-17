@@ -1,10 +1,13 @@
+import os
 import sys
 import time
 import asyncio
-import aiohttp
+import weaviate
 
-from retriever import WeaviateHybridSearchRetrieverWrapper
+#from retriever import WeaviateHybridSearchRetrieverWrapper
+from langchain.retrievers.weaviate_hybrid_search import WeaviateHybridSearchRetriever
 from langchain import OpenAI, LLMChain
+from langchain.chains import RetrievalQA
 from langchain.agents import (
     initialize_agent,
     load_tools,
@@ -25,6 +28,43 @@ from text_processing import TextProcessing
 from tools import create_tools
 from langchain.agents import Tool
 from searxng_wrapper import SearxNGWrapper
+from langchain.schema import Document
+from weaviate_schema import  ScrapedData 
+
+
+OBJECTIVE = "Write me a script that queries langchain's newest documentation and summarizes everything in a simple plain manner."
+INITIAL_TASK = "Decide on what solutions would best serve me to reach my objective"
+
+TASK_STORAGE_NAME = os.getenv("TASK_STORAGE_NAME", os.getenv("TABLE_NAME", "tasks"))
+CONTEXT_STORAGE_TYPE = os.getenv("CONTEXT_STORAGE_TYPE", "weaviate")
+
+
+WEAVIATE_HOST = os.getenv("WEAVIATE_HOST", "")
+WEAVIATE_VECTORIZER = os.getenv("WEAVIATE_VECTORIZER", "")
+
+assert WEAVIATE_HOST, "WEAVIATE_HOST is missing from .env"
+assert WEAVIATE_VECTORIZER, "WEAVIATE_VECTORIZER is missing from .env"
+
+client = weaviate.Client(
+    url=WEAVIATE_HOST,
+    additional_headers={
+        'X-OpenAI-Api-Key': os.environ["OPENAI_API_KEY"]
+    },
+    #auth_client_secret: Optional[AuthCredentials] = None,
+    #timeout_config: Union[Tuple[Real, Real], Real] = (10, 60),
+    #proxies: Union[dict, str, None] = None,
+    #trust_env: bool = False,
+    #additional_headers: Optional[dict] = None,
+    #startup_period: Optional[int] = 5,
+    embedded_options=[],
+)
+
+client.schema.get()
+client.schema.create(ScrapedData)
+
+
+retriever = WeaviateHybridSearchRetriever(client, index_name="LangChain", text_key="text")
+
 
 # import lime
 
@@ -122,9 +162,8 @@ def process_data(data, mode):
         total_cost += cost
         
         document.meta["cost"] = cost
-
         
-        document_store.write_documents([document])
+        retriever.add_documents([document])
 
         # Log metadata
         
@@ -172,17 +211,25 @@ def x():
     )
 
     # Create LLMChain object with prompt
-    llm_chain = LLMChain(prompt=prompt, llm=openai, verbose=True)
+    llm_chain = QARe(prompt=prompt, llm=openai, verbose=True)
 
     tools = create_tools(llm_chain=llm_chain, memory=readonlymemory, manager=manager)
 
-    tools = [
-        Tool(
-            name="Intermediate Answer",
-            func=SearxNGWrapper().run,
-            description="useful for when you need to ask with search"
+    weaviate_chain = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
+
+    tools += Tool(
+            name = "Weaviate chain",
+            func=weaviate_chain.run,
+            description="Run a hybrid semantic search on weaviate for the information that's already stored there. Always run this first to get more context about the situation, before doing anything else."
         )
-    ]
+
+    #tools = [
+    #    Tool(
+    #        name="Intermediate Answer",
+    #        func=SearxNGWrapper().run,
+    #        description="useful for when you need to ask with search"
+    #    )
+    #]
 
 
     ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
@@ -202,7 +249,7 @@ def x():
 
     start_time = time.time()
 
-    result = agent.run("Create a task list for the following tasks that a 'developer' agent AI use execute: write a python file exactly like this one, except it should tell this one what to do. I want it to continuously create 5 tasks for itself, and the 'developer' (this script) that make the most sense to proceed with, keeping the goal in mind.")
+    result = agent.run("A young 23 year old girl from germany with a phd in philosophy needs to get married, help her.")
     print(result)
 
     #process_data(result,  mode)

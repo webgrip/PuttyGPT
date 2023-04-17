@@ -1,6 +1,6 @@
 {
-    "class": "LangchainSection",
-    "description": "A section of the Langchain documentation",
+    "class": "ScrapedData",
+    "description": "A section of text",
     "properties": [
         {"name": "title", "dataType": ["string"], "description": "Title of the section"},
         {"name": "url", "dataType": ["string"], "description": "The url something was scraped from"},
