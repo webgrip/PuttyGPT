@@ -37,11 +37,23 @@ from CustomPromptTemplate import CustomPromptTemplate
 
 from langchain.retrievers import TimeWeightedVectorStoreRetriever
 
+from langchain.tools.human.tool import HumanInputRun
+
 # from weaviate_schema import  ScrapedData
 
 
-#OBJECTIVE = "Write me a script that queries langchain's newest documentation and summarizes everything in a simple plain manner."
-OBJECTIVE = "Read the file contents in the entire solution directory this script is running from, and summarize it in clear, clean language. If something fails, you must keep trying."
+from langchain.agents.agent_toolkits import (
+    create_vectorstore_router_agent,
+    VectorStoreRouterToolkit,
+    VectorStoreInfo,
+)
+
+
+
+
+
+OBJECTIVE = "Write me a script that queries langchain's newest documentation and summarizes everything in a simple plain manner."
+#OBJECTIVE = "Read the file contents in the entire solution directory this script is running from, and summarize it in clear, clean language. If something fails, you must keep trying."
 INITIAL_TASK = "Decide on what solutions would best serve me to reach my objective. An internet search and a summarization might be a good idea."
 
 TASK_STORAGE_NAME = os.getenv("TASK_STORAGE_NAME", os.getenv("TABLE_NAME", "tasks"))
@@ -108,7 +120,7 @@ def x():
     template = """Use the following format:
         Question: the input question you must answer
         Thought: you should always think about what to do
-        Action: the action to take, should be one of [HumanInput, Bash, SearchEngine, SummarizeText, SummarizeDocuments]
+        Action: the action to take, should be one of [HumanInput, Memory, Bash, SearchEngine, SummarizeText, SummarizeDocuments]
         Action Input: what to instruct the AI Action representative.
         Observation: The Agent's response
         (this Thought/Action/Action Input/Observation can repeat N times)
@@ -117,7 +129,7 @@ def x():
 
         When responding with your Final Answer, remember that the person you are responding to CANNOT see any of your Thought/Action/Action Input/Observations, so if there is any relevant information there you need to include it explicitly in your response.
 
-        Chat history: {chat_history}
+        
 
         Question: {input}
 
@@ -125,31 +137,11 @@ def x():
         
     """
 
-    tools = create_tools(manager=manager)
-
-    tools += [
-        Tool(
-            name="HumanInput",
-            func=HumanInputRun().run,
-            description="Useful for when your objective has veered so far from the original aim that human intervention is necessary. If certainty falls below 70%, choose this option.",
-            callback_manager=manager
-        ),
-    ]
+    #Chat history: {chat_history}
 
 
-    tool_names = [tool.name for tool in tools]
 
-    prompt = CustomPromptTemplate(
-        template=template,
-        tools=tools,
-        # This omits the `agent_scratchpad`, `tools`, and `tool_names` variables because those are generated dynamically
-        # This includes the `intermediate_steps` variable because that is needed
-        input_variables=["input", "intermediate_steps"]
-    )
-
-    hybridSearch = RetrievalQA.from_chain_type(
-        combine_documents_chain=qa_chain
-        #prompt=prompt,
+    hybridSearchChain = RetrievalQA.from_chain_type(
         llm=openai,
         chain_type="stuff",
         retriever=sparseAndDenseRetriever,
@@ -157,7 +149,27 @@ def x():
         #search_kwargs={"k": 1},
     )
 
-    #timeWeightedVectorStore = RetrievalQA.from_chain_type(
+
+    tools = create_tools(manager=manager)
+    tool_names = [tool.name for tool in tools]
+
+    tools.append(
+        Tool(
+            name="Memory",
+            func=hybridSearchChain.run,
+            description="Useful for when you need to think about events in the past so that you can use that knowledge to answer the question, this should always be the first step before gathering new context",
+            callback_manager=manager
+        ),
+    )
+
+
+    memoryVectorStoreInfo = VectorStoreInfo(
+        name="Extremely fast access memory",
+        description="Useful for when you need to think about events in the past so that you can use that knowledge to answer the question, this should always be the first step before gathering new context",
+        vectorstore=vectorstore
+    )
+    
+    #longTermMemoryChain = RetrievalQA.from_chain_type(
     #    prompt=prompt,
     #    llm=openai,
     #    chain_type="stuff",
@@ -166,9 +178,30 @@ def x():
     #    #search_kwargs={"k": 1},
     #)
 
+    #shortTermMemoryChain = RetrievalQA.from_chain_type(
+    #    prompt=prompt,
+    #    llm=openai,
+    #    chain_type="stuff",
+    #    retriever=sparseAndDenseRetriever,
+    #    verbose=True,
+    #    #search_kwargs={"k": 1},
+    #)
 
-    overall_chain = SimpleSequentialChain(chains=[synopsis_chain, review_chain], verbose=True)
+    router_toolkit = VectorStoreRouterToolkit(
+        vectorstores=[memoryVectorStoreInfo],
+        llm=openai
+    )
+    #agent_executor = create_vectorstore_router_agent(
+    #    llm=openai,
+    #    toolkit=router_toolkit,
+    #    verbose=True
+    #).run(OBJECTIVE)
     
+
+    start_time = time.time()
+
+   # agent = AgentExecutor.from_agent_and_tools(agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, tools=tools, verbose=True, memory=memory, callback_manager=manager, allowed_tools=tool_names)
+
 
     agent = initialize_agent(
         tools,
@@ -184,17 +217,15 @@ def x():
         allowed_tools=tool_names
     )
 
-    agentExecutor = AgentExecutor().from_agent_and_tools(agent=agent, tools=tools, callback_manager=manager, verbose=True)
+    print(agent);
+    print(type(agent));
 
-    agentExecutor
 
-    start_time = time.time()
-
-    result = agentExecutor.run(input=OBJECTIVE)
+    result = agent.run(OBJECTIVE)
 
     print(result)
 
-    # process_data(result,  mode)
+    process_data(result)
 
     elapsed_time = time.time() - start_time
     print(f"Elapsed time: {elapsed_time:.2f} seconds")
@@ -208,6 +239,7 @@ def x():
 
 
 def process_data(data):
+    print(data)
     text_processing = TextProcessing()
 
     # Customize the number of sections based on the mode
@@ -219,6 +251,9 @@ def process_data(data):
     cost_per_token = 0.0006  # You can adjust this
 
     for i in range(num_sections):
+
+        print(data["sections"][i]);
+
         # Create document
         section_text = data["sections"][i]["text"]
         section_title = data["sections"][i]["title"]
@@ -233,7 +268,7 @@ def process_data(data):
             }
         )
 
-        document.meta["sentiment"] = text_processing.analyze_sentiment(section_text)
+        #document.meta["sentiment"] = text_processing.analyze_sentiment(section_text)
 
         #document.meta["summary"] = text_processing.summarize_concice(section_text)
 

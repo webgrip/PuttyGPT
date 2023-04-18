@@ -10,4 +10,4 @@ aiodns==3.0.0
 apify-client==1.0.0
 
 python-dotenv==1.0.0
-faiss==1.5.3
+

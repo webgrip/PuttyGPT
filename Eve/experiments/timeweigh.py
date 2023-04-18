@@ -4,8 +4,6 @@ from langchain.schema import Document
 from langchain.vectorstores import Weaviate
 import weaviate
 import datetime
-import faiss
-from langchain.vectorstores import FAISS
 
 
 client = weaviate.Client(
@@ -33,8 +31,9 @@ vectorstore = Weaviate(client, "Paragraph", "content")
 
 retriever = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, decay_rate=.33, k=1) 
 
-index = faiss.IndexFlatL2(embedding_size)
-vectorstore = FAISS(embeddings_model.embed_query, index, InMemoryDocstore({}), {})
+#index = faiss.IndexFlatL2(embedding_size)
+#vectorstore = FAISS(embeddings_model.embed_query, index, InMemoryDocstore({}), {})
+
 now = datetime.datetime.now()
 retriever.add_documents(
     [
@@ -46,7 +45,7 @@ retriever.add_documents(
 )
 #
 
-retriever.get_relevant_documents("hello world")
+
 
 # "Hello Foo" is returned first because "hello world" is mostly forgotten
-print()
+print(retriever.get_relevant_documents("hello world"))
