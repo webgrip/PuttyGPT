@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package WebGrip.Protos;
+
+option csharp_namespace = "WebGrip.Protos";
+
+import "google/api/annotations.proto";
+
+service ChatService {
+  rpc AskQuestion (QuestionRequest) returns (QuestionResponse) {
+    option (google.api.http) = {
+      post: "/question"
+      body: "*"
+    };
+  }
+}
+
+message QuestionRequest {
+  string message = 1;
+}
+
+message QuestionResponse {
+  string status = 1;
+  string message = 2;
+}
