@@ -35,6 +35,7 @@
     <Compile Include="DPR.py" />
     <Compile Include="Eve.py" />
     <Compile Include="execution_agent.py" />
+    <Compile Include="experiments\grpc.py" />
     <Compile Include="experiments\timeweigh.py" />
     <Compile Include="LANGCHAN_COMPLETION_EVALS.py" />
     <Compile Include="llmchain.py" />
@@ -80,6 +81,10 @@
     <Folder Include="components\" />
     <Folder Include="experiments\" />
     <Folder Include="modules\" />
+    <Folder Include="protos\" />
+    <Folder Include="protos\google\" />
+    <Folder Include="protos\google\api\" />
+    <Folder Include="protos\protobuf\" />
     <Folder Include="retrievers\" />
     <Folder Include="data\" />
     <Folder Include="weaviate and gpu\" />
@@ -104,6 +109,10 @@
     <Content Include="docker-compose.yml" />
     <Content Include="data\dolly.jsonl" />
     <Content Include="Dockerfile" />
+    <Content Include="protos\chat.proto" />
+    <Content Include="protos\google\api\annotations.proto" />
+    <Content Include="protos\google\api\http.proto" />
+    <Content Include="protos\protobuf\descriptor.proto" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env1\">

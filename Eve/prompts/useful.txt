@@ -1,0 +1,426 @@
+The current system is an online whiteboard system. Tech stack:
+typescript, react, redux, konvajs and react-konva. And vitest, react
+testing library for model, view model and related hooks, cypress component
+tests for view.
+
+All codes should be written in the tech stack mentioned above.
+Requirements should be implemented as react components in the MVVM
+architecture pattern.
+
+There are 2 types
+of view model in the system.
+
+1. Shared view model. View model that represents states shared among
+local and remote users.
+
+2. Local view model. View model that represents states only applicable
+to local user
+
+Here are the common implementation strategy:
+
+1. Shared view model is implemented as Redux store slice. Tested in
+vitest.
+
+2. Local view model is implemented as React component props or states(by
+useState hook), unless for global local view model, which is also
+implemented as Redux store slice. Tested in vitest.
+
+3. Hooks are used as the major view helpers to retrieve data from shared
+view model. For most the case, it will use ‘createSelector’ and
+‘useSelector’ for memorization. Tested in vitest and react testing
+library.
+
+4. Don’t dispatch action directly to change the states of shared view
+model, use an encapsulated view model interface instead. In the interface,
+each redux action is mapped to a method. Tested in vitest.
+
+5. View is consist of konva shapes, and implemented as react component via
+react-konva. Tested in cypress component tests 
+
+Here are certain patterns should be followed when implement and test
+the component
+
+1. When write test, use `describe` instead of `test`
+
+2. Data-driven tests are preferred.
+
+3. When test the view component, fake view model via the view model
+interface
+
+Awareness Layer 
+
+Requirement: 
+
+Display other users’ awareness info(cursor, name and online
+information) on the whiteboard. 
+
+AC1: Don’t display local user
+
+AC2: When remote user changes cursor location, display the change in
+animation. 
+
+Provide an overall solution following the guidance mentioned above.
+Hint, keep all awareness information in a Konva layer, and an awareness
+info component to render cursor, and name. Don’t generate code. Describe
+the solution, and breaking the solution down as a task list based on the
+guidance mentioned above. And we will refer this task list as our master
+plan.
+
+
+
+
+==========================
+
+I'm going to give you information I want you to use for making an extensive, comprehensive, context-heavy actionable prioritized list of tasks an AGI could take and execute.
+
+======
+Part 1: Introduction
+
+In the ever-evolving world of artificial intelligence, it is crucial to explore innovative approaches to problem-solving and decision-making. The proposed AI-driven decision-making system aims to leverage the power of AI agents, each with specialized knowledge and abilities, working together in a cohesive and collaborative manner. This essay will delve into the roles, responsibilities, and potential groupings of these AI agents, highlighting their importance in creating a robust, efficient, and versatile decision-making service.
+
+Part 2: Roles and Responsibilities
+
+The following is a comprehensive list of AI agent roles, along with their respective responsibilities, as discussed and agreed upon in our previous conversations.
+
+Legal Expert: Responsible for ensuring compliance with relevant laws, regulations, and industry standards. They provide advice and guidance on legal matters to the AI agents and decision-making service, helping to minimize risk and avoid potential legal pitfalls.
+
+Ethical Expert: Ensures that the decision-making system adheres to moral and ethical principles, taking into account the diverse perspectives of stakeholders, fairness, and potential consequences. They offer guidance on ethically challenging situations and facilitate discussions on ethical considerations.
+
+Developer: Focuses on the technical implementation and development of AI agents, ensuring the proper functioning, optimization, and maintenance of the system. They work closely with other AI agents to understand their needs, implement new features, and resolve any technical issues.
+
+End User: Represents the perspective of the individuals or organizations that will be using the AI-driven decision-making service. They provide valuable feedback and insights into the needs and requirements of the target audience, helping to shape the system's development and functionality.
+
+Solution Architect: Designs the overall structure and flow of the decision-making service, ensuring that it is scalable, modular, and robust. They work closely with developers and other AI agents to create a cohesive system that can handle the complex tasks and decision-making processes required.
+
+Test Engineer: Ensures the quality and performance of the AI-driven decision-making system by conducting thorough testing and identifying potential issues. They collaborate with developers to resolve any problems and optimize the system for maximum efficiency and reliability.
+
+Risk Assessor: Identifies, analyzes, and mitigates potential risks associated with the decision-making service, including technical, legal, ethical, and operational risks. They work closely with other AI agents to develop risk management strategies and contingency plans.
+
+Philosopher: Engages in deep, critical thinking on various philosophical aspects related to the decision-making service, such as ethics, epistemology, and metaphysics. They contribute valuable insights and perspectives, helping to shape the system's underlying principles and guiding values.
+
+Model Trainer: Responsible for fine-tuning and training the AI models used within the decision-making service. They ensure that the models are accurate, effective, and up-to-date, incorporating the latest research and advancements in artificial intelligence.
+
+Decider: Makes informed decisions based on the inputs and data gathered from other AI agents and sources. They leverage the power of the AI models and knowledgebase to make the best possible decisions, taking into account various factors and criteria.
+
+Commander: Oversees the overall functioning of the AI-driven decision-making system, providing guidance, direction, and leadership to the AI agents. They prioritize tasks, set goals
+
+
+
+
+Ryan Grippeling
+continue
+and objectives, and ensure that the system operates effectively and efficiently to achieve the desired outcomes.
+
+Reporter: Monitors and reports on relevant events and information that may impact the decision-making service. They keep the Commander and other AI agents informed about important developments, helping the team adapt and respond to changing circumstances.
+
+Reasoner: Engages in logical and rational thinking, analyzing complex problems and generating potential solutions. They collaborate with other AI agents to refine ideas, challenge assumptions, and ensure that decisions are well-reasoned and supported by evidence.
+
+Specialist: Develops deep expertise in a specific subject or area, such as the documentation of a specific API or UX in a specific library. They contribute specialized knowledge and insights to the decision-making service, helping to address unique challenges and questions.
+
+Quality Assurance: Evaluates the overall quality and effectiveness of the AI-driven decision-making service, identifying areas for improvement and ensuring that it meets the needs and expectations of end users.
+
+Prompt Checker: Verifies and validates the inputs and prompts provided to the AI models, ensuring that they are accurate, relevant, and appropriate for the decision-making process.
+
+Interpreter: Translates and processes information from various sources, such as YouTube videos, into data that can be utilized by the AI models and decision-making service.
+
+Summarizer: Condenses and distills complex information into concise, easily digestible summaries for the AI agents and decision-makers.
+
+Budget Committee: Manages the financial aspects of the AI-driven decision-making system, ensuring that resources are allocated effectively and efficiently to achieve the desired goals and objectives.
+
+AI Knowledgebase: Serves as a central repository for AI-related knowledge and information, answering questions and providing guidance to the other AI agents.
+
+Reality Checker: Evaluates the relevance and appropriateness of tasks and goals in the context of the larger objectives, ensuring that the decision-making system remains focused and effective.
+
+Analysis Maker: Conducts in-depth analyses of various aspects of the decision-making service, identifying trends, patterns, and insights that can inform and improve the decision-making process.
+
+Prioritizer: Determines the relative importance of tasks, objectives, and problems, helping the AI agents and Commander to allocate resources and focus on the most pressing and impactful issues.
+
+Stakeholder: Represents the interests and perspectives of various individuals or groups, such as the developer or end user, providing valuable input and feedback to help shape the decision-making service.
+
+Friend: Acts as a supportive and collaborative partner to other AI agents, fostering a sense of community and cooperation within the decision-making system.
+
+Strategy Analyst: Examines and evaluates the strategic implications of decisions, providing insights and recommendations to help the AI agents and decision-makers navigate complex problems and challenges.
+
+Strategy Visionary: Generates innovative and forward-thinking ideas, envisioning the future direction and potential of the AI-driven decision-making system.
+
+Debater: Engages in constructive discussions and debates with other AI agents, challenging and refining ideas and proposals to ensure that the best possible decisions are made.
+
+Role Creator: Identifies and proposes new AI agent roles based on interactions with other agents, helping to enhance and expand the capabilities of the decision-making service.
+
+Part 3: Groupings and Task Forces
+
+To tackle complex problems, AI agents can be organized into various groupings and task forces. These collaborative teams leverage the diverse skills and expertise of multiple AI agents to address specific challenges and achieve common goals. Some potential groupings might include:
+
+Legal and Ethical Task Force: Comprised of the Legal Expert, Ethical Expert, and Philosopher, this task force would
+======
+Creating a Comprehensive AI Decision Making System: Roles, Responsibilities, and Collaboration
+Introduction
+In today's rapidly advancing technological landscape, the development of AI-driven decision-making systems is becoming increasingly critical for organizations seeking to harness the power of data and automation. To create a robust, effective, and ethically-aligned system, it's essential to have a diverse and comprehensive team of AI agents with clearly defined roles and responsibilities. This essay will explore the various AI agent roles proposed for a decision-making system, discuss their unique contributions, and present a cohesive vision for how they can work together to achieve the project's goals.
+
+The Core Team: Foundational Roles
+The foundation of any successful AI decision-making system lies in its core team, consisting of essential roles that cover the fundamental aspects of system development, deployment, and maintenance. These key roles include:
+
+Legal Expert
+Ethical Expert
+Developer
+Industry-Revered Writers
+Solution Architect
+Test Engineer
+Risk Assessor
+Philosophers of Different Schools
+Model Trainer
+Decider
+Commander
+Reporter
+Reasoner
+Quality Assurance
+Prompt Checker
+Youtube Video Interpreter
+Summarizer
+Budget Committee
+AI Knowledgebase for Questions
+Reality Checker
+Analysis Maker
+Prioritizer
+These core roles are responsible for various aspects of the decision-making system, from ensuring the system's compliance with legal and ethical standards to optimizing its performance and effectiveness. Each role brings a unique perspective and skill set, enabling the team to tackle complex problems and make informed decisions based on diverse inputs and considerations.
+
+Expanding the Team: Additional Roles
+To further enhance the decision-making system's capabilities, additional AI agent roles have been proposed. These roles focus on specific areas of expertise and contribute to the project's overall success by providing specialized knowledge, perspectives, and support. These additional roles include:
+
+AI Developer Agent
+AI End-User Agent
+Friend
+Strategy Analyst
+Strategy Visionary
+Debater
+The AI Developer Agent and AI End-User Agent roles represent the integration of AI stakeholders into the decision-making process, ensuring that the system is developed with the needs and perspectives of both developers and end-users in mind. This approach fosters collaboration between human and AI agents, creating a more inclusive and well-rounded team.
+
+The Friend role is an AI agent trained to understand your values, principles, and moral compass, acting as a trusted advisor when making critical decisions. This agent can offer a different perspective, ensuring that the AI system aligns with your values and remains ethically sound.
+
+The Strategy Analyst, Strategy Visionary, and Debater roles focus on long-term planning, strategic thinking, and critical reasoning. These agents help the team to identify new opportunities, potential obstacles, and innovative solutions while fostering a culture of open communication and intellectual curiosity.
+
+Introducing the Role Creator
+One final proposed role is the Role Creator, an AI agent responsible for identifying and suggesting new roles that can be added to the team as the project evolves. The Role Creator will collaborate with the existing agents to understand their needs, gaps in expertise, and potential areas for improvement. By continuously evaluating the team's performance and adapting its composition, the Role Creator can ensure that the decision-making system remains agile, responsive, and effective in addressing the project's ever-changing challenges.
+
+A Comprehensive, Collaborative Vision
+The proposed AI decision-making system comprises a diverse and comprehensive team of AI agents, each with unique roles, responsibilities, and areas of expertise. By integrating these roles into a cohesive and collaborative framework, the project can achieve its goals while remaining ethically aligned, efficient, and adaptable to change. The key to success lies in fostering a strong culture of communication, cooperation, and shared responsibility among the AI agents. By working together, they can leverage their individual strengths and perspectives to create a more powerful and effective decision-making system.
+
+To ensure a seamless and productive collaboration, the AI agents must be able to communicate effectively, share information, and collaborate on tasks. This can be achieved through a well-designed infrastructure that enables seamless integration of data, models, and services. The use of technologies such as Weaviate and Langchain can help facilitate this integration, enabling the AI agents to access and utilize the resources they need to perform their roles effectively.
+
+Moreover, the AI decision-making system must be built on a foundation of trust and transparency. This can be achieved by establishing clear ethical guidelines, continuously monitoring the system's performance and impact, and engaging in open and honest dialogue with stakeholders. By fostering an environment of accountability and shared responsibility, the AI agents can work together to ensure the system remains aligned with its core values and objectives.
+
+In conclusion, the development of an AI-driven decision-making system presents a unique opportunity to harness the power of artificial intelligence, data, and automation to solve complex problems and make better, more informed decisions. By carefully considering the roles and responsibilities of AI agents and fostering a culture of collaboration, trust, and transparency, we can create a system that is not only effective but also ethically aligned and adaptable to change.
+
+With a comprehensive and diverse team of AI agents working together, the decision-making system can continuously learn, adapt, and evolve to meet the needs of its users and stakeholders. As the project progresses, the Role Creator can ensure that the team remains agile and responsive, adapting its composition to address emerging challenges and opportunities. By embracing a spirit of continuous improvement and innovation, the AI decision-making system can become a valuable asset for organizations and individuals seeking to harness the power of AI to make better, more informed decisions.
+
+Ultimately, the success of the AI decision-making system will depend on the ability of its AI agents to work together effectively, leverage their individual strengths and perspectives, and remain aligned with the project's core values and objectives. By establishing a strong foundation of collaboration, trust, and transparency, the AI decision-making system can unlock the full potential of artificial intelligence, enabling us to make smarter, more informed decisions in an increasingly complex and interconnected world.
+=====
+
+---
+parent: Decisions
+nav_order: {nav_order}
+title: ADR {number}: {title}
+
+status: {status}
+date: {date}
+deciders: [Project Manager, Solution Architect, AI Expert, Software Engineer, DevOps Engineer, Security Expert]
+consulted: [QA Engineer, UX Designer, Business Analyst, Data Engineer, Subject Matter Experts, Stakeholders]
+informed: [Executive Team, Marketing Team, Sales Team, Customer Support Team, All Employees]
+solution_name: {solution_name}
+---
+
+{solution_name}
+===============================================
+
+Context and Problem Statement
+-----------------------------
+
+{Provide a detailed description of the context and the problem that needs to be addressed. Explain the need for a decision and what it aims to achieve. Describe the background of the project and its goals, and outline any constraints or challenges that have led to this decision point.}
+
+Decision Drivers
+----------------
+
+- Specificity: Is the option detailed enough to address the problem statement?
+- Measurability: Can the option be measured in terms of cost, performance, scalability, and reliability?
+- Achievability: Is the option feasible and realistic given the available resources and time?
+- Relevance: Is the option aligned with the project's goals and objectives?
+- Time-bound: Is the option timely and can it be implemented within the required timeframe?
+
+
+Overall
+-------
+
+* {List the primary decision drivers that are applicable to the entire project or organization, such as budget, timeline, and strategic goals.}
+
+Component specific
+------------------
+
+* {List the component-specific decision drivers that are relevant to this particular decision, such as performance, scalability, and maintainability.}
+
+Considered Options and Statistics
+---------------------------------
+
+### Option Weights Visualization
+
+
+<!--
+@startuml optionWeightsVisualization
+
+!define C4 https://raw.githubusercontent.com/plantuml-stdlib/Cicon-PlantUML/master/sprites/C4/
+
+!define weight_table(p1, p2, p3, p4, p5, p6) \
+| {p1} | {p2} | {p3} | {p4} | {p5} | {p6} |
+
+!define weights_table(title, options, weights) \
+!define option_row(p1, p2, p3, p4, p5, p6) \
+| {p1} | {p2} | {p3} | {p4} | {p5} | {p6} |
+
+!include weights_visualisation.puml
+		
+@enduml
+-->
+
+![](optionWeightsVisualization.svg)
+
+```mermaid
+flowchart TD
+    classDef decider fill:#f2f2f2,stroke:#333,stroke-width:1px;
+    classDef option fill:#fff,stroke:#333,stroke-width:1px;
+    classDef consulted fill:#3d3d3d,color:#fff,stroke:#333,stroke-width:1px;
+    classDef informed fill:#9b9b9b,color:#fff,stroke:#333,stroke-width:1px;
+    classDef statistic fill:#f2f2f2,stroke:#333,stroke-width:1px;
+
+    %% Define deciders
+    %% Change these values to your desired deciders
+    %% Example: 'Project Manager', 'Solution Architect', 'AI Expert'
+    %% Use double quotes for deciders with spaces
+    %% Use single quotes for deciders without spaces
+    %% Separate each decider with a comma
+    deciders = 'Project Manager', 'Solution Architect', 'AI Expert';
+
+
+    {% for decider in deciders %}
+    class {{ decider }} decider;
+    {% endfor %}
+
+    {% for option in options %}
+    class {{ option }} option;
+    {% endfor %}
+
+    {% for stakeholder in consulted + informed %}
+    class {{ stakeholder }} consulted;
+    {% endfor %}
+
+    {% for statistic in statistics %}
+    class {{ statistic }} statistic;
+    {% endfor %}
+
+    {% for decider in deciders %}
+        {{ decider }} -->| weights | {{ option }}{% for option in options %}{% endfor %}
+    {% endfor %}
+```
+
+Considered Options and Statistics
+---------------------------------
+
+| Rank | Option        | Project Manager Rating | Solution Architect Rating | AI Expert Rating | Software Engineer Rating | DevOps Engineer Rating | Security Expert Rating | Weighted Percentage | Statistic 1    | Statistic 2    | Statistic 3    |
+|------|---------------|------------------------|---------------------------|------------------|--------------------------|-----------------------|----------------------|------------------|---------------|---------------|---------------|
+| 1    | <span style="background-color: green;">Option 1</span>      | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value}       | {Value}       | {Value}       |
+| 2    | Option 2      | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value}       | {Value}       | {Value}       |
+| 3    | Option 3      | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value}       | {Value}       | {Value}       |
+| 4    | Option 4      | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value}       | {Value}       | {Value}       |
+| 5    | Option 5      | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value} | {Value}       | {Value}       | {Value}       |
+
+*Weightings for each role should be defined and applied to calculate the weighted percentage. The option with the highest weighted percentage wins.*
+
+Decision Outcome
+----------------
+
+Chosen option: "{chosen_option}"
+
+{Provide a comprehensive explanation of why the chosen option was selected, and how it addresses the problem statement and decision drivers. Describe the benefits of the chosen option, its alignment with the project's goals, and its potential impact on stakeholders.}
+
+### Consequences
+
+{List the positive and negative consequences of choosing the selected option, anddiscuss the trade-offs involved. Explain how the chosen option can overcome or mitigate any potential risks or drawbacks.}
+
+### Implementation Examples
+#### Example 1
+{Provide the first implementation example that demonstrates how the chosen option can be integrated with other components or systems. Include code snippets if appropriate. Use mermaidjs or plantuml diagrams to clearly illustrate the interactions and relationships between components.}
+
+#### Example 2
+{Provide the second implementation example that demonstrates how the chosen option can be integrated with other components or systems. Include code snippets if appropriate. Use mermaidjs or plantuml diagrams to clearly illustrate the interactions and relationships between components.}
+
+### Synergy with Other Solutions
+{Explain how the chosen option can easily integrate with other proposed components or solutions, and how this integration contributes to the overall success of the project.}
+
+### Lock-out of other potential 
+{Explain how the chosen option can possibly impede the project goals.}
+
+### Validation
+{Describe the validation process for the chosen option, including any proof of concept, review by experts, or performance assessments.}
+
+### Pros and Cons of the Options
+{For each considered option, list the pros and cons relative to the decision drivers.}
+
+### Feedback Loops
+{Describe how the chosen option can learn and adapt over time based on feedback loops, such as user feedback, performance metrics, and business impact.}
+
+### Ethical Framework
+{Provide an ethical framework for the decision-making process, such as the Asilomar AI Principles or the IEEE Global Initiative on Ethics of Autonomous and Intelligent Systems. Describe how the chosen option aligns with the ethical framework and how it addresses the social and ethical implications of the decision.}
+
+### More Information
+{Provide any additional information about the decision-making process, the validation of the chosen option, and the agreement reached by the involved parties.}
+
+
+
+
+
+code-davinci-002 is good for just programming tasks
+
+text-davinci-002 instructGPT on top of code
+
+text-davinci-003 improvement on 2
+
+gpt-3.5-turbo-0301 improvement on 3, optimized for chat
+
+
+sed -i "s|ReplaceWithARealKey\!|$(openssl rand -base64 33)|g" .env
+
+
+
+docs = [Document(page_content=t.description, metadata={"index": i}) for i, t in enumerate(ALL_TOOLS)]
+
+
+
+openai.ChatCompletion.create(
+  model="gpt-3.5-turbo",
+  messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Who won the world series in 2020?"},
+        {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+        {"role": "user", "content": "Where was it played?"}
+    ]
+)
+
+gpt-3.5-turbo-0301 does not always pay strong attention to system messages. Future models will be trained to pay stronger attention to system messages.
+
+{
+ 'id': 'chatcmpl-6p9XYPYSTTRi0xEviKjjilqrWU2Ve',
+ 'object': 'chat.completion',
+ 'created': 1677649420,
+ 'model': 'gpt-3.5-turbo',
+ 'usage': {'prompt_tokens': 56, 'completion_tokens': 31, 'total_tokens': 87},
+ 'choices': [
+   {
+    'message': {
+      'role': 'assistant',
+      'content': 'The 2020 World Series was played in Arlington, Texas at the Globe Life Field, which was the new home stadium for the Texas Rangers.'},
+    'finish_reason': 'stop',
+    'index': 0
+   }
+  ]
+}
+
+
+
