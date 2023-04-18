@@ -67,3 +67,6 @@ networks:
 
   putty-network:
     external: true
+
+volumes:
+  weaviate:

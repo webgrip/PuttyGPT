@@ -126,6 +126,17 @@ def x():
     """
 
     tools = create_tools(manager=manager)
+
+    tools += [
+        Tool(
+            name="HumanInput",
+            func=HumanInputRun().run,
+            description="Useful for when your objective has veered so far from the original aim that human intervention is necessary. If certainty falls below 70%, choose this option.",
+            callback_manager=manager
+        ),
+    ]
+
+
     tool_names = [tool.name for tool in tools]
 
     prompt = CustomPromptTemplate(
@@ -137,7 +148,8 @@ def x():
     )
 
     hybridSearch = RetrievalQA.from_chain_type(
-        prompt=prompt,
+        combine_documents_chain=qa_chain
+        #prompt=prompt,
         llm=openai,
         chain_type="stuff",
         retriever=sparseAndDenseRetriever,
@@ -154,16 +166,16 @@ def x():
     #    #search_kwargs={"k": 1},
     #)
 
+
+    overall_chain = SimpleSequentialChain(chains=[synopsis_chain, review_chain], verbose=True)
     
 
     agent = initialize_agent(
         tools,
-        openai,
-        llm_chain=hybridSearch, 
-        memory=readonlymemory,
+        openai, 
         agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
         callback_manager=manager,
-        stop=["\nObservation:"], 
+        #stop=["\nObservation:"], 
         max_execution_time=5,
         max_iterations=10,
         #early_stopping_method="generate",
@@ -172,13 +184,13 @@ def x():
         allowed_tools=tool_names
     )
 
-    AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True)
+    agentExecutor = AgentExecutor().from_agent_and_tools(agent=agent, tools=tools, callback_manager=manager, verbose=True)
 
-
+    agentExecutor
 
     start_time = time.time()
 
-    result = agent.run(OBJECTIVE)
+    result = agentExecutor.run(input=OBJECTIVE)
 
     print(result)
 
@@ -242,15 +254,8 @@ def process_data(data):
 
         retriever.add_documents([document])
 
-        # Log metadata
-
-
-
-
 
 if __name__ == "__main__":
-
-
     try:
         x()
     except openai.error.RateLimitError:

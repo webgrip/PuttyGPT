@@ -20,6 +20,12 @@ def create_tools(manager: CallbackManager) -> List[Tool]:
 
     tools = [
         Tool(
+            name="Consult memory",
+            func=HumanInputRun().run,
+            description="Useful for when your objective requires you to quickly, in a flash, consult your memory to recall something that happened earlier.",
+            callback_manager=manager
+        ),
+        Tool(
             name="HumanInput",
             func=HumanInputRun().run,
             description="Useful for when your objective has veered so far from the original aim that human intervention is necessary. If certainty falls below 70%, choose this option.",

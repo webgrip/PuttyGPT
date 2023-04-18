@@ -44,12 +44,15 @@ RUN rm -rf /var/cache/apk/*
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
+
+
+# Install the Python dependencies
+RUN pip install --upgrade pip
+
 # Copy the requirements file to the container
 COPY Eve/requirements.txt .
 COPY Eve/requirements-application.txt .
 
-# Install the Python dependencies
-RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir -r requirements-application.txt
 
