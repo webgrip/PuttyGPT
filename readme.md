@@ -40,6 +40,9 @@ Build and run the Docker containers using the provided `docker-compose.yml` file
 
 ```
 docker-compose up --build
+cp .env.example .env
+
+sed -i "s|ReplaceWithARealKey\!|$(openssl rand -base64 33)|g" .env
 
 ```
 
