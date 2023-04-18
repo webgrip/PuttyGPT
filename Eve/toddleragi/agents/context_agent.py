@@ -1,4 +1,3 @@
-from openai_connector import OpenAIConnector
 global OBJECTIVE
 
 class ContextAgent:

@@ -5,8 +5,8 @@ class TextProcessing:
     def __init__(self):
 
         self.chain = [
-            { "analyze_sentiment", load_chain("chains/sentiment/chain.json")},
-            { "summarize_concice", load_chain("chains/summarize/concice/chain.json")},
+           # { "analyze_sentiment", load_chain("chains/sentiment/chain.json")},
+           # { "summarize_concice", load_chain("chains/summarize/concice/chain.json")},
             #{ "summarize_concice", LLMSummarizationCheckerChain(llm=llm, verbose=True, max_checks=2)},
         ]
 

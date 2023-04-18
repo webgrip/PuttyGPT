@@ -1,5 +1,5 @@
-from context_agent import ContextAgent
-from openai_connector import OpenAIConnector
+from .context_agent import ContextAgent
+from .openai_connector import OpenAIConnector
 
 class ExecutionAgent:
     def __init__(self, context_storage):

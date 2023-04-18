@@ -26,39 +26,17 @@ RUN pip3 install --upgrade pip setuptools
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 RUN ln -sf pip3 /usr/bin/pip
 RUN rm -r /root/.cache
-# RUN pip install --no-cache-dir $PYTHON_PACKAGES
-#RUN pip3 install 'pandas<0.21.0' \    #<---------- PANDAS
-#RUN apk add --no-cache --virtual build-dependencies 
-#RUN apk add --no-cache --virtual build-dependencies gfortran
-#RUN apk add --no-cache --virtual build-dependencies gfortran
 RUN rm -rf /var/cache/apk/*
 
-#RUN apk update && \
-#    apk upgrade && \ 
-    #apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev openssl-dev g++ gfortran libopenblas-dev liblapack-dev pkg-config && \
-    #apk add --no-cache --virtual .build-deps gcc g++ gfortran libopenblas-dev liblapack-dev pkg-config && \
-    #rm -rf /var/cache/apk/*
-
-
-# Create a virtual environment and activate it
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
-
-
-# Install the Python dependencies
-RUN pip install --upgrade pip
-
-# Copy the requirements file to the container
 COPY Eve/requirements.txt .
-COPY Eve/requirements-application.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir -r requirements-application.txt
+RUN /venv/bin/pip install --upgrade pip
+RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code to the container
 COPY ./Eve ./app
 
-# Set the entrypoint for the container
-#CMD [ "python", "main.py" ]
+#CMD [ "/venv/bin/python", "main.py" ]
 ENTRYPOINT ["tail", "-f", "/dev/null"]

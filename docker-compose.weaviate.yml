@@ -20,13 +20,13 @@ services:
       NER_INFERENCE_API: 'http://ner-transformers:8080'
       SUM_INFERENCE_API: 'http://sum-transformers:8080'
       SPELLCHECK_INFERENCE_API: 'http://text-spellcheck:8080'
-      OPENAI_APIKEY: 
       QUERY_DEFAULTS_LIMIT: 25
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
       DEFAULT_VECTORIZER_MODULE: 'text2vec-transformers'
-      ENABLE_MODULES: 'text2vec-transformers,qna-transformers,ner-transformers,sum-transformers,text-spellcheck,img2vec-neural,ref2vec-centroid,generative-openai'
+      ENABLE_MODULES: 'text2vec-openai,text2vec-transformers,qna-transformers,ner-transformers,sum-transformers,text-spellcheck,img2vec-neural,ref2vec-centroid,generative-openai'
       CLUSTER_HOSTNAME: 'node1'
+    env_file: .env
     volumes:
       - /var/weaviate:/var/lib/weaviate
     networks:

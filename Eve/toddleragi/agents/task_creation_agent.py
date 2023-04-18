@@ -1,4 +1,4 @@
-from openai_connector import OpenAIConnector
+from .openai_connector import OpenAIConnector
 from typing import Dict, List
 
 class TaskCreationAgent:

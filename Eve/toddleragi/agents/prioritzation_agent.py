@@ -1,4 +1,4 @@
-from openai_connector import OpenAIConnector
+from .openai_connector import OpenAIConnector
 from collections import deque
 
 class PrioritizationAgent:

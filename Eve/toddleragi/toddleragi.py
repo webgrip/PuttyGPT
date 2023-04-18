@@ -8,7 +8,7 @@ from components.IContextStorage import ContextStorage, ContextData, WeaviateOpti
 
 # Constants
 
-OBJECTIVE = "Write me a script that queries langchain's newest documentation and summarizes everything in a simple plain manner."
+OBJECTIVE = "Act as a world class programmer / 10x / 100x / individual, MVP. Write a program just like what you're running on, except better in every single way"
 INITIAL_TASK = "Decide on what solutions would best serve me to reach my objective"
 
 TASK_STORAGE_NAME = os.getenv("TASK_STORAGE_NAME", os.getenv("TABLE_NAME", "tasks"))

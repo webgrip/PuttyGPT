@@ -23,8 +23,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="agents\AutoGPT.py" />
+    <Compile Include="agents\BabyAGI.py" />
+    <Compile Include="agents\GenerativeAgent.py" />
     <Compile Include="apify_scraper.py" />
     <Compile Include="babyagi.py" />
+    <Compile Include="characters\Tommie.py" />
     <Compile Include="components\IContextStorage.py" />
     <Compile Include="components\pinecone.py" />
     <Compile Include="components\weaviate.py" />
@@ -48,6 +52,15 @@
     <Compile Include="requirements-application.txt" />
     <Compile Include="task_creation_agent.py" />
     <Compile Include="text_processing.py" />
+    <Compile Include="toddleragi\agents\context_agent.py" />
+    <Compile Include="toddleragi\agents\execution_agent.py" />
+    <Compile Include="toddleragi\agents\openai_connector.py" />
+    <Compile Include="toddleragi\agents\prioritzation_agent.py" />
+    <Compile Include="toddleragi\agents\task_creation_agent.py" />
+    <Compile Include="toddleragi\components\IContextStorage.py" />
+    <Compile Include="toddleragi\components\pinecone.py" />
+    <Compile Include="toddleragi\components\weaviate.py" />
+    <Compile Include="toddleragi\toddleragi.py" />
     <Compile Include="tools.py" />
     <Compile Include="weaviate_schema.py" />
     <Compile Include="wikipedia_api_wrapper.py" />
@@ -81,12 +94,18 @@
     <Folder Include="components\" />
     <Folder Include="experiments\" />
     <Folder Include="modules\" />
+    <Folder Include="characters\" />
     <Folder Include="protos\" />
     <Folder Include="protos\google\" />
     <Folder Include="protos\google\api\" />
     <Folder Include="protos\protobuf\" />
     <Folder Include="retrievers\" />
     <Folder Include="data\" />
+    <Folder Include="toddleragi\" />
+    <Folder Include="toddleragi\agents\" />
+    <Folder Include="toddleragi\agents\__pycache__\" />
+    <Folder Include="toddleragi\components\" />
+    <Folder Include="toddleragi\components\__pycache__\" />
     <Folder Include="weaviate and gpu\" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +132,9 @@
     <Content Include="protos\google\api\annotations.proto" />
     <Content Include="protos\google\api\http.proto" />
     <Content Include="protos\protobuf\descriptor.proto" />
+    <Content Include="toddleragi\agents\__pycache__\execution_agent.cpython-311.pyc" />
+    <Content Include="toddleragi\components\__pycache__\IContextStorage.cpython-311.pyc" />
+    <Content Include="toddleragi\components\__pycache__\weaviate.cpython-311.pyc" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env1\">

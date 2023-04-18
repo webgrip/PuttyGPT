@@ -105,8 +105,9 @@ services:
 
 networks:
 
-  default:
-    name: putty-network
+  putty-network:
+    external: true
+    
 
   weaviate-network:
     external: true
