@@ -468,6 +468,7 @@ def x(vectorstore):
     """
 
     #Chat history: {chat_history}
+    tool_names = [tool.name for tool in tools]
 
     prefix = """You are an AI who performs one task based on the following objective: {objective}. Take into account these previously completed tasks: {context}."""
     suffix = """Question: {task}
@@ -519,7 +520,6 @@ def x(vectorstore):
 
 
 
-    start_time = time.time()
 
 
     baby_agi({"objective": OBJECTIVE})

@@ -35,6 +35,12 @@ def create_tools(manager: CallbackManager) -> List[Tool]:
         #    callback_manager=manager
         #),
         Tool(
+            name="ArchitectAndWriteProgram",
+            func=BashProcess(return_err_output=True).run,
+            description="Useful for when you need to write a program in order to solve a task. Use bash to write the files directly to the commandline.",
+            callback_manager=manager
+        ),
+        Tool(
             name="Bash",
             func=BashProcess(return_err_output=True).run,
             description="Useful for when you need to run bash commands. Input should be a valid bash command.",
