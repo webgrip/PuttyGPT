@@ -16,9 +16,9 @@ def create_new_memory_retriever():
     # Define your embedding model
     embeddings_model = OpenAIEmbeddings()
     # Initialize the vectorstore as empty
-    embedding_size = 1536
-    index = faiss.IndexFlatL2(embedding_size)
-    vectorstore = FAISS(embeddings_model.embed_query, index, InMemoryDocstore({}), {}, relevance_score_fn=relevance_score_fn)
+    #embedding_size = 1536
+    #index = faiss.IndexFlatL2(embedding_size)
+    #vectorstore = FAISS(embeddings_model.embed_query, index, InMemoryDocstore({}), {}, relevance_score_fn=relevance_score_fn)
     return TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, other_score_keys=["importance"], k=15)    
 
 tommie = GenerativeAgent(name="Tommie", 
