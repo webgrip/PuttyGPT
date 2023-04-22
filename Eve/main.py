@@ -412,7 +412,17 @@ schema = {
 client.schema.create(schema)
 
 
+
+
+
+
+
 vectorstore = Weaviate(client, "Paragraph", "content")
+
+
+vectorstore2 = wrappers.weaviate.weaviate_wrapper(vectorstore);
+
+
 
 embedding_model = OpenAIEmbeddings(client=client)
 

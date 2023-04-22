@@ -47,19 +47,8 @@ def create_new_memory_retriever():
     )
     embeddings_model = OpenAIEmbeddings()
 
-    from langchain.vectorstores import FAISS
-    from langchain.vectorstores import Chroma
-    
-    
-
-    #embedding_size = 1536
-    #index = faiss.IndexFlatL2(embedding_size)
-    #vectorstore = FAISS(embeddings_model.embed_query, index, InMemoryDocstore({}), {}, relevance_score_fn=relevance_score_fn)
-
     vectorstore = Weaviate(client, "Paragraph", "content", embedding=embeddings_model.embed_query)
-
-    vectorstore = Chroma(embedding_function=embeddings_model.embed_query)
-
+    
     return TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, other_score_keys=["importance"], k=15)    
 
 ryan = GenerativeAgentMemory(
