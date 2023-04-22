@@ -1,7 +1,6 @@
 version: '3.4'
 services:
   weaviate:
-    container_name: weaviate
     command:
     - --host
     - 0.0.0.0
@@ -20,43 +19,33 @@ services:
       NER_INFERENCE_API: 'http://ner-transformers:8080'
       SUM_INFERENCE_API: 'http://sum-transformers:8080'
       SPELLCHECK_INFERENCE_API: 'http://text-spellcheck:8080'
+      OPENAI_APIKEY: $OPENAI_APIKEY
       QUERY_DEFAULTS_LIMIT: 25
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
-      DEFAULT_VECTORIZER_MODULE: 'text2vec-transformers'
-      ENABLE_MODULES: 'text2vec-openai,text2vec-transformers,qna-transformers,ner-transformers,sum-transformers,text-spellcheck,img2vec-neural,ref2vec-centroid,generative-openai'
+      DEFAULT_VECTORIZER_MODULE: 'text2vec-openai'
+      ENABLE_MODULES: 'text2vec-openai,qna-transformers,ner-transformers,sum-transformers,text-spellcheck,img2vec-neural,ref2vec-centroid,generative-openai'
       CLUSTER_HOSTNAME: 'node1'
-    env_file: .env
-    volumes:
-      - /var/weaviate:/var/lib/weaviate
-    networks:
-      - weaviate-network
-      - putty-network
   t2v-transformers:
     container_name: t2v-transformers
     image: semitechnologies/transformers-inference:sentence-transformers-multi-qa-MiniLM-L6-cos-v1
     environment:
       ENABLE_CUDA: '0'
   qna-transformers:
-    container_name: qna-transformers
     image: semitechnologies/qna-transformers:distilbert-base-uncased-distilled-squad
     environment:
       ENABLE_CUDA: '0'
   ner-transformers:
-    container_name: ner-transformers
     image: semitechnologies/ner-transformers:dbmdz-bert-large-cased-finetuned-conll03-english
     environment:
       ENABLE_CUDA: '0'
   sum-transformers:
-    container_name: sum-transformers
     image: semitechnologies/sum-transformers:facebook-bart-large-cnn-1.0.0
     environment:
       ENABLE_CUDA: '0'
   text-spellcheck:
-    container_name: text-transformers
     image: semitechnologies/text-spellcheck-model:pyspellchecker-en
   i2v-neural:
-    container_name: i2v-transformers
     image: semitechnologies/img2vec-pytorch:resnet50
     environment:
       ENABLE_CUDA: '0'
