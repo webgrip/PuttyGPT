@@ -35,20 +35,30 @@ git clone https://github.com/yourusername/puttygpt.git
 cd puttygpt
 
 ```
-
-Build and run the Docker containers using the provided `docker-compose.yml` file:
+(Put this in init.sh later or makefile)
+Build and run the Docker containers using the provided docker-compose files:
 
 ```
-docker-compose up --build
+# Prerequisite (I can probably get rid of this but meh not right now)
+docker network create weaviate-network
+
+# Without public grpc endpoint
+docker-compose -f docker-compose.weaviate.yml -f docker-compose.yml up --build
+
+# With grpc endpoint (run this after previous)
+docker-compose -f docker-compose.weaviate.yml -f docker-compose.yml -f docker-compose.brazen.yml up brazen --build
+
+# Copy env file
 cp .env.example .env
 
+# replace the string for searxng
 sed -i "s|ReplaceWithARealKey\!|$(openssl rand -base64 33)|g" .env
 
 ```
 
 ### Usage
 
-To interact with the application, monitor your docker logs for eve
+To interact with the application, monitor your docker logs for `eve`
 
 :wrench: Customization
 ----------------------

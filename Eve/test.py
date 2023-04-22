@@ -46,28 +46,34 @@ def create_new_memory_retriever():
         # embedded_options=[],
     )
     embeddings_model = OpenAIEmbeddings()
-    vectorstore = Weaviate(client, "Paragraph", "content", embedding=embeddings_model.embed_query, )
+
+    from langchain.vectorstores import FAISS
+    from langchain.vectorstores import Chroma
+    
+    
+
+    #embedding_size = 1536
+    #index = faiss.IndexFlatL2(embedding_size)
+    #vectorstore = FAISS(embeddings_model.embed_query, index, InMemoryDocstore({}), {}, relevance_score_fn=relevance_score_fn)
+
+    vectorstore = Weaviate(client, "Paragraph", "content", embedding=embeddings_model.embed_query)
+
+    vectorstore = Chroma(embedding_function=embeddings_model.embed_query)
 
     return TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, other_score_keys=["importance"], k=15)    
 
-ryan_memories = GenerativeAgentMemory(
-    llm=LLM,
-    memory_retriever=create_new_memory_retriever(),
-    verbose=True,
-    reflection_threshold=8 # we will give this a relatively low number to show how reflection works
-)
-
-ryan = GenerativeAgent(
+ryan = GenerativeAgentMemory(
     name="Ryan", 
     age=28,
     traits="loyal, experimental, hopeful, smart, world class programmer", # You can add more persistent traits here 
     status="Executing the task", # When connected to a virtual world, we can have the characters update their status
-    memory=ryan_memories,
+    memory_retriever=create_new_memory_retriever(),
+    verbose=True,
     llm=LLM,
-    #daily_summaries = [
-    #    "Drove across state to move to a new town but doesn't have a job yet."
-    #],
-    #reflection_threshold = 8, # we will give this a relatively low number to show how reflection works
+    daily_summaries = [
+        "Just woke up, ready and eager to start working"
+    ],
+    reflection_threshold = 8, # we will give this a relatively low number to show how reflection works
 )
 
 

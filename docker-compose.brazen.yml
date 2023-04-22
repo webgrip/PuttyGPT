@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  brazen:
+    container_name: brazen
+    image: webgrip/brazen
+    ports:
+    - 9100:80
+    build:
+      context: .
+      dockerfile: Brazen/Dockerfile
+    env_file: .env
+    networks:
+      - putty-network
+    
+networks:
+  putty-network:
+    external: true
