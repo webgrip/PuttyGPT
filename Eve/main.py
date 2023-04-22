@@ -95,13 +95,13 @@ def create_new_memory_retriever():
 
 
     embeddings_model = embeddings = OpenAIEmbeddings(
-        deployment="your-embeddings-deployment-name",
-        model="your-embeddings-model-name"
+        #deployment="your-embeddings-deployment-name",
+        model="text-embedding-ada-002"
     )
 
     vectorstore = Weaviate(client, "Paragraph", "content", embedding=embeddings_model, relevance_score_fn=relevance_score_fn)
     
-    return TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, other_score_keys=["importance"], k=15, )    
+    return TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, other_score_keys=["importance", "buffer_idx"], k=15, )    
 
 ryan = GenerativeAgentMemory(
     name="Ryan", 
