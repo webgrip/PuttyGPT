@@ -1,4 +1,4 @@
-"""Wrapper around weaviate vector database."""
+"""Wrapper around weaviate vector database.""" 
 from __future__ import annotations
 
 from typing import Any, Dict, Iterable, List, Optional, Type, Callable, Tuple
@@ -200,6 +200,24 @@ class Weaviate(VectorStore):
             score = np.dot(res["_additional"]["vector"], self._embedding.embed_query(query))
             docs_and_scores.append((Document(page_content=text, metadata=res), score))
         return docs_and_scores
+
+    def _similarity_search_with_relevance_scores(
+        self,
+        query: str,
+        k: int = 4,
+        **kwargs: Any,
+    ) -> List[Tuple[Document, float]]:
+        if self._relevance_score_fn is None:
+            raise ValueError(
+                "relevance_score_fn must be provided to"
+                " Weaviate constructor to normalize scores"
+            )
+        docs_and_scores = self.similarity_search_with_score(query, k=k)
+        return [(doc, self._relevance_score_fn(score)) for doc, score in docs_and_scores]
+
+
+
+
 
     @classmethod
     def from_texts(

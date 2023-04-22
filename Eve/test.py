@@ -31,6 +31,16 @@ def relevance_score_fn(score: float) -> float:
     # to a similarity function (0 to 1)
     return 1.0 - score / math.sqrt(2)
 
+def relevance_score_fn(score: float) -> float:
+    """Return a similarity score on a scale [0, 1]."""
+    # This will differ depending on a few things:
+    # - the distance / similarity metric used by the VectorStore
+    # - the scale of your embeddings (OpenAI's are unit norm. Many others are not!)
+    # This function converts the euclidean norm of normalized embeddings
+    # (0 is most similar, sqrt(2) most dissimilar)
+    # to a similarity function (0 to 1)
+    return 1.0 - score / math.sqrt(2)
+
 def create_new_memory_retriever():
     """Create a new vector store retriever unique to the agent."""
 
@@ -47,9 +57,9 @@ def create_new_memory_retriever():
     )
     embeddings_model = OpenAIEmbeddings()
 
-    vectorstore = Weaviate(client, "Paragraph", "content", embedding=embeddings_model.embed_query)
+    vectorstore = Weaviate(client, "Paragraph", "content", embedding=embeddings_model.embed_query, relevance_score_fn=relevance_score_fn)
     
-    return TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, other_score_keys=["importance"], k=15)    
+    return TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, other_score_keys=["importance"], k=15, )    
 
 ryan = GenerativeAgentMemory(
     name="Ryan", 
