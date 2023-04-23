@@ -27,7 +27,7 @@ WEAVIATE_HOST = os.getenv("WEAVIATE_HOST", "")
 WEAVIATE_VECTORIZER = os.getenv("WEAVIATE_VECTORIZER", "")
 
 tracer = LangChainTracer()
-tracer.load_default_session()
+tracer.load_session('test')
 callback_manager = CallbackManager([StdOutCallbackHandler(), tracer])
 
 openai = OpenAI(callback_manager=callback_manager)
@@ -84,6 +84,8 @@ retriever = TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, other_scor
 
 llm = ChatOpenAI(model="text-davinci-003", temperature=0.415, max_tokens=1500, streaming=True, callback_manager=callback_manager) 
 
+llm = OpenAI(model="text-davinci-003", temperature=0.415, max_tokens=1500, streaming=True, callback_manager=callback_manager)
+
 autonomousAgent = AutonomousAgent().make(
     name="Ryan",
     age=28,
@@ -121,7 +123,12 @@ vectorstore_info = VectorStoreInfo(
     description="Useful for when you need to quickly access memory of events and people and things that happened recently or longer ago. Always do this first whenever you need external information.",
     vectorstore=vectorstore
 )
+
 toolkit = VectorStoreToolkit(vectorstore_info=vectorstore_info)
+
+llm = OpenAI(model="text-davinci-003", temperature=0.415, max_tokens=1500, streaming=True, callback_manager=callback_manager)
+             
+
 agent_executor = create_vectorstore_agent(
     llm=llm,
     toolkit=toolkit,
@@ -145,13 +152,18 @@ tools.append(
     Tool(
         name="Memory",
         func=memory_chain.run,
-        description="Useful for when you need to quickly access memory of events and people and things that happened recently or longer ago. Always do this first whenever you need external information.",
+        description="Always do this first. Useful for when you need to access memory of events or people or things that happened recently or longer ago.",
         callback_manager=callback_manager,
         return_direct=True
-    ),
+    )
 )
 
 
+OBJECTIVE = "Scan the repository you're in and make a detailed analysis of it. Then put it in a file called 'helloworld.md'"
+
+
+prompt = AutonomousAgent().getPrompt(autonomousAgent, tools, OBJECTIVE)
+prompt.format(adjective="funny")
 
 
 prompt = ZeroShotAgent.create_prompt(
@@ -161,13 +173,12 @@ prompt = ZeroShotAgent.create_prompt(
     input_variables=["objective", "task", "context", "agent_scratchpad"],
 )
 
-llm = OpenAI(model="text-davinci-003", temperature=0.415, max_tokens=1500, streaming=True, callback_manager=callback_manager)
 llm_chain = LLMChain(llm=llm, prompt=prompt, callback_manager=callback_manager)
 tool_names = [tool.name for tool in tools]
 agent = ZeroShotAgent(llm_chain=llm_chain, allowed_tools=tool_names)
 agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, callback_manager=callback_manager)
 
-OBJECTIVE = "Scan this repository and make a detailed analysis of it. Then put it in a file called 'helloworld.md'"
+
 
 verbose = True
 max_iterations: Optional[int] = 10

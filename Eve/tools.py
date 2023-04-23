@@ -47,8 +47,8 @@ def create_tools(callback_manager: CallbackManager) -> List[Tool]:
             description="Useful for when you need to run bash commands. Input should be a valid bash command.",
             callback_manager=callback_manager
         ),
-        WriteFileTool(description="Writes files to disk. Must have content to write to the file."),
-        ReadFileTool(),
+        #WriteFileTool(description="Writes files to disk. Must have content to write to the file."),
+        #ReadFileTool(),
         #Tool  (
         #    name="Wolfram",
         #    func=WolframAlphaAPIWrapper().run,

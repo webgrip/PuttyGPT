@@ -56,6 +56,12 @@ sed -i "s|ReplaceWithARealKey\!|$(openssl rand -base64 33)|g" .env
 
 ```
 
+Cleanup:
+```
+docker-compose -f docker-compose.weaviate.yml -f docker-compose.yml -f docker-compose.brazen.yml down --remove-orphans
+```
+
+
 ### Usage
 
 To interact with the application, monitor your docker logs for `eve`

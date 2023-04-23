@@ -1,5 +1,6 @@
 import math
 from array import array
+from pickle import OBJ
 from langchain.llms.base import BaseLLM
 
 from .GenerativeAgent import GenerativeAgent
@@ -8,6 +9,7 @@ from langchain.vectorstores import Weaviate
 from langchain.retrievers import TimeWeightedVectorStoreRetriever
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.schema import BaseRetriever
+from langchain import PromptTemplate
 
 
 import os
@@ -78,3 +80,28 @@ class AutonomousAgent():
             daily_summaries=daily_summaries,
             verbose=verbose,
         )
+
+    def getPrompt(self, generativeAgent: GenerativeAgent, tools, objective)->PromptTemplate:
+        from datetime import datetime
+        import platform
+
+        def _get_datetime():
+            now = datetime.now()
+            return now.strftime("%m/%d/%Y, %H:%M:%S")
+
+        operating_system = platform.platform()
+
+        generativeAgent.add_memory("I have been given a new objective:{}".format(objective))
+
+       
+
+        return PromptTemplate(
+            template="""You are {name}, an instance of an autonomous AGI agent, running on {operating_system}. This is a recent summary of you: {agent_summary}. You have been given a single task: {task}, based on the overarching objective: {objective}. The tools I can use are: {tools}. Think smart.""", 
+            input_variables=["operating_system", "tools", "objective", "task", "context", "agent_scratchpad"],
+            partial_variables={"agent_summary": generativeAgent.get_summary(), "name": generativeAgent._get_value('name')},
+            tools=tools,
+            prefix="You are an AI who performs one task based on the following objective: {objective}. Take into account these previously completed tasks: {context}.",
+            suffix="Question: {task}\n{agent_scratchpad}",
+        )
+
+        
