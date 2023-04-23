@@ -48,7 +48,7 @@ def create_new_memory_retriever_default():
         model="text-embedding-ada-002"
     )
 
-    vectorstore = Weaviate(client, "Paragraph", "content", embedding=embeddings_model, relevance_score_fn=create_new_memory_retriever_default)
+    vectorstore = Weaviate(client, "Paragraph", "content", embedding=embeddings_model, relevance_score_fn=relevance_score_fn)
     
     return TimeWeightedVectorStoreRetriever(vectorstore=vectorstore, other_score_keys=["importance"], k=15)
 

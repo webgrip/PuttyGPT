@@ -1,55 +1,82 @@
-#from agents.AutoGPT import AutoGPT
-#from agents.BabyAGI import BabyAGI
+import os
+from collections import deque
+from typing import Dict, List, Optional, Any
+
+from langchain import LLMChain, OpenAI, PromptTemplate
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.llms import BaseLLM
+from langchain.vectorstores.base import VectorStore
+from pydantic import BaseModel, Field
+from langchain.chains.base import Chain
+from langchain.experimental import BabyAGI
+
+
+from langchain.vectorstores import FAISS
+from langchain.docstore import InMemoryDocstore
+
+
+# Define your embedding model
+embeddings_model = OpenAIEmbeddings()
+# Initialize the vectorstore as empty
+import faiss
+
+embedding_size = 1536
+index = faiss.IndexFlatL2(embedding_size)
+vectorstore = FAISS(embeddings_model.embed_query, index, InMemoryDocstore({}), {})
 
 
 
-from agents.GenerativeAgent import AutonomousAgent
-from langchain.chat_models import ChatOpenAI
-from langchain.callbacks.base import CallbackManager
-from langchain.callbacks.stdout import StdOutCallbackHandler
-from langchain.callbacks.tracers import LangChainTracer
 
 
-tracer = LangChainTracer()
-tracer.load_default_session()
-callback_manager = CallbackManager([StdOutCallbackHandler(), tracer])
 
-llm = ChatOpenAI(temperature=0.415, max_tokens=1500, streaming = True, callback_manager=callback_manager) 
+from langchain.agents import ZeroShotAgent, Tool, AgentExecutor
+from langchain import OpenAI, SerpAPIWrapper, LLMChain
 
-autonomousAgent = AutonomousAgent().make(
-    name="Ryan",
-    age=28,
-    traits="loyal, experimental, hopeful, smart, world class programmer",
-    status="Executing the task",
-    reflection_threshold = 8,
-    llm=llm,
-    daily_summaries = [
-        "Just woke up, ready and eager to start working"
-    ],
-    verbose=True,
+todo_prompt = PromptTemplate.from_template(
+    "You are a planner who is an expert at coming up with a todo list for a given objective. Come up with a todo list for this objective: {objective}"
+)
+todo_chain = LLMChain(llm=OpenAI(temperature=0), prompt=todo_prompt)
+search = SerpAPIWrapper()
+tools = [
+    Tool(
+        name="Search",
+        func=search.run,
+        description="useful for when you need to answer questions about current events",
+    ),
+    Tool(
+        name="TODO",
+        func=todo_chain.run,
+        description="useful for when you need to come up with todo lists. Input: an objective to create a todo list for. Output: a todo list for that objective. Please be very clear what the objective is!",
+    ),
+]
+
+
+prefix = """You are an AI who performs one task based on the following objective: {objective}. Take into account these previously completed tasks: {context}."""
+suffix = """Question: {task}
+{agent_scratchpad}"""
+prompt = ZeroShotAgent.create_prompt(
+    tools,
+    prefix=prefix,
+    suffix=suffix,
+    input_variables=["objective", "task", "context", "agent_scratchpad"],
+)
+
+llm = OpenAI(temperature=0)
+llm_chain = LLMChain(llm=llm, prompt=prompt)
+tool_names = [tool.name for tool in tools]
+agent = ZeroShotAgent(llm_chain=llm_chain, allowed_tools=tool_names)
+agent_executor = AgentExecutor.from_agent_and_tools(
+    agent=agent, tools=tools, verbose=True
 )
 
 
 
+OBJECTIVE = "Write a weather report for SF today"
 
-
-#ryanMemories = [
-#    "Ryan remembers his first job, where he was working on a new concept for webshops at a startup",
-#    "Ryan feels energetic today",
-#    "Ryan knows a lot about writing clean code. Clean architecture.",
-#    "Ryan is a world class programmer",
-#    "Ryan is completely devoted to the goal of creating AGI, and every step he takes is one on that path",
-#]
-
-
-## The current "Summary" of a character can't be made because the agent hasn't made
-## any observations yet.
-#print(agent.get_summary())
-
-## We can give the character memories directly
-
-#for memory in ryanMemories:
-#    agent.add_memory(memory)
-## Now that Tommie has 'memories', their self-summary is more descriptive, though still rudimentary.
-## We will see how this summary updates after more observations to create a more rich description.
-#print(agent.get_summary(force_refresh=True))
+# Logging of LLMChains
+verbose = False
+# If None, will keep on going forever
+max_iterations: Optional[int] = 3
+baby_agi = BabyAGI.from_llm(
+    llm=llm, vectorstore=vectorstore, task_execution_chain=agent_executor, verbose=verbose, max_iterations=max_iterations
+)
