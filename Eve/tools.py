@@ -11,12 +11,13 @@ from langchain.llms import OpenAI
 from langchain.utilities import SearxSearchWrapper
 #from wikipedia_api_wrapper import WikipediaAPIWrapper
 #from wolfram_alpha_api_wrapper import WolframAlphaAPIWrapper
-from config import SEARXNG_URL
 
 from langchain.tools.file_management.write import WriteFileTool
 from langchain.tools.file_management.read import ReadFileTool
 
 from langchain.chains.summarize import load_summarize_chain
+
+import os
 
 def create_tools(manager: CallbackManager) -> List[Tool]:
     # zapier = ZapierNLAWrapper() Future
@@ -34,12 +35,12 @@ def create_tools(manager: CallbackManager) -> List[Tool]:
         #    description="Useful for when you need to write a program in order to solve a task. Use bash to write the files directly to the commandline.",
         #    callback_manager=manager
         #),
-        Tool(
-            name="ArchitectAndWriteProgram",
-            func=BashProcess(return_err_output=True).run,
-            description="Useful for when you need to write a program in order to solve a task. Use bash to write the files directly to the commandline.",
-            callback_manager=manager
-        ),
+        #Tool(
+        #    name="ArchitectAndWriteProgram",
+        #    func=BashProcess(return_err_output=True).run,
+        #    description="Useful for when you need to write a program in order to solve a task. Use bash to write the files directly to the commandline.",
+        #    callback_manager=manager
+        #),
         Tool(
             name="Bash",
             func=BashProcess(return_err_output=True).run,
@@ -62,7 +63,7 @@ def create_tools(manager: CallbackManager) -> List[Tool]:
         #),
         Tool(
             name="SearchEngine",
-            func=SearxSearchWrapper(searx_host=SEARXNG_URL).run,
+            func=SearxSearchWrapper(searx_host=os.getenv("SEARXNG_URL", "")).run,
             description="Search online for the newest information on current events and human discourse about topics. Only do this if you exhaust all other options. We want to stay low resource intensive.",
             callback_manager=manager
         ),
