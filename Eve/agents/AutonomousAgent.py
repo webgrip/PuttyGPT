@@ -2,7 +2,7 @@ import math
 from array import array
 from langchain.llms.base import BaseLLM
 
-from GenerativeAgent import GenerativeAgentMemory
+from .GenerativeAgent import GenerativeAgent
 
 from langchain.vectorstores import Weaviate
 from langchain.retrievers import TimeWeightedVectorStoreRetriever
@@ -65,9 +65,9 @@ class AutonomousAgent():
         reflection_threshold: int = 8,
         memory_retriever: BaseRetriever = create_new_memory_retriever_default(),
         verbose: bool = False
-    )->GenerativeAgentMemory:
+    )->GenerativeAgent:
 
-        return GenerativeAgentMemory( # TODO current_plan
+        return GenerativeAgent( # TODO current_plan
             name=name,
             age=age,
             traits=traits,

@@ -20,7 +20,7 @@ services:
       NER_INFERENCE_API: 'http://ner-transformers:8080'
       SUM_INFERENCE_API: 'http://sum-transformers:8080'
       SPELLCHECK_INFERENCE_API: 'http://text-spellcheck:8080'
-      OPENAI_APIKEY: $OPENAI_APIKEY
+      OPENAI_APIKEY: $OPENAI_API_KEY
       QUERY_DEFAULTS_LIMIT: 25
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
