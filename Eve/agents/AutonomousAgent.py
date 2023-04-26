@@ -1,7 +1,8 @@
 import math
 from array import array
-from pickle import OBJ
 from langchain.llms.base import BaseLLM
+
+from typing import Sequence
 
 from .GenerativeAgent import GenerativeAgent
 
@@ -10,6 +11,9 @@ from langchain.retrievers import TimeWeightedVectorStoreRetriever
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.schema import BaseRetriever
 from langchain import PromptTemplate
+from langchain.tools.base import BaseTool
+from langchain.agents import ZeroShotAgent
+from langchain.prompts import load_prompt
 
 
 import os
@@ -81,27 +85,47 @@ class AutonomousAgent():
             verbose=verbose,
         )
 
-    def getPrompt(self, generativeAgent: GenerativeAgent, tools, objective)->PromptTemplate:
-        from datetime import datetime
-        import platform
+    def getPrompt(generativeAgent: GenerativeAgent, objective, operating_system, tool_names, tools_summary)->PromptTemplate:
 
-        def _get_datetime():
-            now = datetime.now()
-            return now.strftime("%m/%d/%Y, %H:%M:%S")
+        prompt = load_prompt("prompts/ryan.json")
+        prompt.partial(agent_summary=generativeAgent.get_summary(True))
+        prompt.format(
+            task = objective,
+            objective = objective,
+            agent_name = "Ryan",
+            operating_system = operating_system,
+            tool_names = tool_names,
+            tools_summary = tools_summary,
+            agent_summary = generativeAgent.get_summary(True)
+        )
+        
+        return prompt
+        
+        #return prompt.format(adjective="funny")
 
-        operating_system = platform.platform()
 
-        generativeAgent.add_memory("I have been given a new objective:{}".format(objective))
+        #if input_variables is None:
+           # input_variables = ["input", "agent_scratchpad"]
+        #return PromptTemplate(template=template, input_variables=input_variables)
+
+        
+
+        #ZeroShotAgent.create_prompt(
+        #    tools=tools,
+        #    prefix=template,
+        #    suffix="",
+        #    input_variables=["objective", "task", "context", "agent_scratchpad"],
+        #)
+
+         #template="""You are {name}, an instance of an autonomous AGI agent, running on {operating_system}. This is a recent summary of you: {agent_summary}. You have been given a single task: {task}, based on the overarching objective: {objective}. The tools I can use are: {tools}. Think smart.\n{agent_scratchpad}""", 
+         #   input_variables=["operating_system", "tools", "objective", "task", "agent_scratchpad"],
+         #   partial_variables={"agent_summary": generativeAgent.get_summary(), "agent_name": generativeAgent.name},
+         #   tools=tools,
+         # #  prefix="You are an AI who performs one task based on the following objective: {objective}. Take into account these previously completed tasks: {context}.",
+         #  # suffix="Question: {task}",
 
        
 
-        return PromptTemplate(
-            template="""You are {name}, an instance of an autonomous AGI agent, running on {operating_system}. This is a recent summary of you: {agent_summary}. You have been given a single task: {task}, based on the overarching objective: {objective}. The tools I can use are: {tools}. Think smart.""", 
-            input_variables=["operating_system", "tools", "objective", "task", "context", "agent_scratchpad"],
-            partial_variables={"agent_summary": generativeAgent.get_summary(), "name": generativeAgent._get_value('name')},
-            tools=tools,
-            prefix="You are an AI who performs one task based on the following objective: {objective}. Take into account these previously completed tasks: {context}.",
-            suffix="Question: {task}\n{agent_scratchpad}",
-        )
+        return prompt
 
         

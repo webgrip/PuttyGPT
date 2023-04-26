@@ -1,0 +1,5 @@
+{
+  "_type": "prompt",
+  "input_variables": [ "operating_system", "tool_names", "tools_summary", "objective", "task", "agent_name", "agent_summary" ],
+  "template_path": "prompts/ryan.txt"
+}

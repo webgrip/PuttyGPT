@@ -162,8 +162,7 @@ tools.append(
 OBJECTIVE = "Scan the repository you're in and make a detailed analysis of it. Then put it in a file called 'helloworld.md'"
 
 
-prompt = AutonomousAgent().getPrompt(autonomousAgent, tools, OBJECTIVE)
-prompt.format(adjective="funny")
+
 
 
 prompt = ZeroShotAgent.create_prompt(
@@ -172,6 +171,32 @@ prompt = ZeroShotAgent.create_prompt(
     suffix="Question: {task}\n{agent_scratchpad}",
     input_variables=["objective", "task", "context", "agent_scratchpad"],
 )
+
+
+from datetime import datetime
+import platform
+
+def _get_datetime():
+    now = datetime.now()
+    return now.strftime("%m/%d/%Y, %H:%M:%S")
+
+operating_system = platform.platform()
+
+autonomousAgent.add_memory("I have been given a new objective:{}".format(OBJECTIVE))
+
+tools_summary = "\n".join([f"{tool.name}: {tool.description}" for tool in tools])
+tool_names = ", ".join([tool.name for tool in tools])
+
+
+
+prompt = AutonomousAgent.getPrompt(generativeAgent=autonomousAgent, objective=OBJECTIVE, operating_system=operating_system, tool_names=tool_names, tools_summary=tools_summary, )
+
+
+print(prompt)
+exit
+
+
+
 
 llm_chain = LLMChain(llm=llm, prompt=prompt, callback_manager=callback_manager)
 tool_names = [tool.name for tool in tools]
@@ -183,6 +208,18 @@ agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, ve
 verbose = True
 max_iterations: Optional[int] = 10
 
+from pydantic import BaseModel, Field, validator
+# Define your desired data structure.
+class Joke(BaseModel):
+    setup: str = Field(description="question to set up a joke")
+    punchline: str = Field(description="answer to resolve the joke")
+    
+    # You can add custom validation logic easily with Pydantic.
+    @validator('setup')
+    def question_ends_with_question_mark(cls, field):
+        if field[-1] != '?':
+            raise ValueError("Badly formed question!")
+        return field
 
 
 
@@ -194,4 +231,19 @@ baby_agi = BabyAGI.from_llm(
     max_iterations=max_iterations
 )
 
-baby_agi({"objective": OBJECTIVE})
+baby_agi(
+    {
+        "objective": OBJECTIVE,
+        "task": OBJECTIVE,
+        "agent_name": "Ryan",
+        "operating_system": operating_system,
+        "tool_names": tool_names,
+        "tools_summary": tools_summary,
+        "agent_summary": autonomousAgent.get_summary(True)
+    },
+    
+    
+    
+    
+    
+)
